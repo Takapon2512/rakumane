@@ -1,0 +1,77 @@
+.text-color {
+    color: rgb(243, 235, 235);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.header {
+    position: fixed;
+    height: 56px;
+    width: 100vw;
+    background-color: rgb(240, 119, 49);
+    z-index: 20;
+
+    &_container {
+        width: 96%;
+        height: 100%;
+        max-width: 960px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+
+        @media screen and (max-width: 900px) {
+            width: 92%;
+        }
+    }
+
+    &_logo {
+        display: flex;
+        align-items: center;
+        @extend .font-m;
+        @extend .text-color;
+        font-weight: 600;
+        z-index: 15;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    &_buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    &_register {
+        display: block;
+        text-decoration: none;
+        padding: 4px 12px;
+        border: 1px solid rgb(243, 235, 235);
+        border-radius: 4px;
+        @extend .text-color;
+        @extend .font-s;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    &_login {
+        text-decoration: none;
+        margin-right: 16px;
+        @extend .text-color;
+        @extend .font-s;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

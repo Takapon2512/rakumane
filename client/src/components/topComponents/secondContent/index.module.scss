@@ -1,0 +1,99 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 32px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.secC {
+    padding: 64px 0;
+    background-image: url("/images/grey_back.png");
+
+    &_container {
+        position: relative;
+        width: 96%;
+        max-width: 960px;
+        margin: auto;
+    }
+
+    &_title {
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 64px;
+        letter-spacing: 1px;
+        @extend .font-xl;
+        @extend .text-color;
+    }
+
+    &_image {
+        width: 100%;
+        height: 400px;
+        margin-bottom: 40px;
+    }
+
+    &_subtitle {
+        text-align: center;
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .font-l;
+        @extend .text-color;
+    }
+
+    &_subDescription {
+        text-align: center;
+        @extend .text-color;
+    }
+
+    &_emphasis {
+        color: rgb(82, 176, 219);
+        letter-spacing: 2px;
+        font-size: 56px;
+    }
+
+    &_Item {
+        display: flex;
+        position: relative;
+        align-items: center;
+        margin-bottom: 32px;
+        border-radius: 8px;
+        padding: 16px 24px;
+    }
+
+    &_Text {
+        @extend .font-m;
+    }
+
+    &_image {
+        width: 72px;
+        height: 72px;
+        margin: 0 32px 0 0;
+    }
+
+    &_case {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: -16px;
+        left: -48px;
+        width: 96px;
+        height: 32px;
+        border-radius: 40px;
+        background-color: rgb(246, 190, 82);
+        padding-bottom: 4px;
+    }
+}
