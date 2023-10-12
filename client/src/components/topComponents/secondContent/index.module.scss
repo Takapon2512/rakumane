@@ -34,7 +34,6 @@
         font-weight: 600;
         margin-bottom: 64px;
         letter-spacing: 1px;
-        @extend .font-xl;
         @extend .text-color;
     }
 
@@ -61,7 +60,6 @@
     &_emphasis {
         color: rgb(82, 176, 219);
         letter-spacing: 2px;
-        font-size: 56px;
     }
 
     &_Item {
@@ -71,6 +69,10 @@
         margin-bottom: 32px;
         border-radius: 8px;
         padding: 16px 24px;
+
+        @media screen and (max-width: 1100px) {
+            padding: 32px 24px;
+        }
     }
 
     &_Text {
@@ -81,6 +83,11 @@
         width: 72px;
         height: 72px;
         margin: 0 32px 0 0;
+
+        @media screen and (max-width: 1100px) {
+            width: 56px;
+            height: 56px;
+        }
     }
 
     &_case {
@@ -95,5 +102,9 @@
         border-radius: 40px;
         background-color: rgb(246, 190, 82);
         padding-bottom: 4px;
+
+        @media screen and (max-width: 1100px) {
+            left: 15px;
+        }
     }
 }

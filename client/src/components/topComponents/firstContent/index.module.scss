@@ -23,6 +23,7 @@
     min-height: calc(100vh - 120px);
     padding-top: 120px;
     overflow: hidden;
+    position: relative;
     
     &_container {
         max-width: 960px;
@@ -89,54 +90,19 @@
 
     &_horizontal {
         position: absolute;
-        width: 100vw;
+        width: 200vw;
         height: 96px;
+        bottom: -50%;
         background-color: rgb(239, 180, 143);
-        top: 64%;
-        left: 0;
     }
 
     &_vertical {
         position: absolute;
         width: 96px;
-        height: 100vh;
+        height: 200vh;
+        left: 10%;
         background-color: rgb(239, 180, 143);
-        top: 0;
-        left: 20%;
-    }
 
-    &_scroll {
-        position: absolute;
-        bottom: 32px;
-        left: 50vw;
-        width: 2px;
-        height: 0px;
-        background-color: #fff;
-
-        &Circle {
-            position: absolute;
-            bottom: 12px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            transition: transform 0.3s ease-in-out;
-            z-index: 10;
-
-            &:hover {
-                cursor: pointer;
-                transform: scale(1.2);
-            }
-        }
-
-        &SmallCircle {
-            position: absolute;
-            transform: translateY(337px);
-            left: calc(50vw - 7px);
-            bottom: 136px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background-color: #fff;
-        }
     }
 
     &_vocabulary {
@@ -144,10 +110,6 @@
         bottom: -320px;
         right: -230px;
         color: #fca262;
-
-        @media screen and (max-width: 500px) {
-            display: none;
-        }
     }
 
     &_english {

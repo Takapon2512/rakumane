@@ -11,9 +11,6 @@ import {
     Paper
 } from '@mui/material';
 
-//MUIIcon
-
-
 //Font
 import { notoSansJP } from "@/utils/font";
 
@@ -72,8 +69,17 @@ const SecondContent = () => {
                 <Typography 
                 variant="h2"
                 className={`${notoSansJP.className} ${styles.secC_title}`}
+                sx={{ fontSize: { xs: "32px", md: "48px" } }}
                 >
-                    このような<Box className={styles.secC_emphasis} component={'span'}>課題</Box>はありませんか？
+                    このような
+                    <Box 
+                    className={styles.secC_emphasis} 
+                    component={'span'}
+                    sx={{ fontSize: { xs: "36px", md: "56px" } }}
+                    >
+                        課題
+                    </Box>
+                    はありませんか？
                 </Typography>
                 <List className={styles.secC_Lists}>
                     {
