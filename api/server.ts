@@ -1,24 +1,35 @@
 import express from "express";
-import * as mysql from "mysql";
+import { createPool } from "mysql";
+import cors from "cors";
+import "dotenv/config";
+
+//router
+import { authRouter } from "./routers/auth";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-const Pool = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "rakumane"
+export const Pool = createPool({
+    host: process.env.MYSQL_HOST || "",
+    user: process.env.MYSQL_USER || "",
+    password: process.env.MYSQL_PASSWORD || "",
+    database: "rakumane",
+    port: 8889
 });
 
+app.use(cors());
 app.use(express.json());
 
+app.use("/api/v1/auth", authRouter);
+
 app.get("/", (req, res) => {
-    try {
-        return res.status(200).json({ message: "成功" });
-    } catch(err) {
-        return res.status(500).json({ error: "失敗" });
-    };
+    Pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ error: err });
+        console.log("MySQLと接続中...");
+
+        connection.release();
+        return res.status(200).json({ message: "OK" });
+    });
 });
 
 app.listen(PORT, () => {
