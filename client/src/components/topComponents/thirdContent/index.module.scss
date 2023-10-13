@@ -25,7 +25,7 @@
 
     &_container {
         position: relative;
-        width: 100vw;
+        width: 100%;
         margin: auto;
         overflow-x: hidden;
     }
@@ -308,7 +308,7 @@
     
     &_ImageSp {
         width: 100%;
-        height: 330px;
+        height: 440px;
         border-radius: 12px;
     }
 
@@ -346,7 +346,7 @@
     }
 
     &_descriptionBoxSp {
-        height: 282px;
+        height: 392px;
         background-color: #fff;
         padding: 24px 16px;
         border-radius: 12px;

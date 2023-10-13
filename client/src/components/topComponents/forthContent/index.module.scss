@@ -22,7 +22,7 @@
     padding: 64px 0 88px;
     background: linear-gradient(to bottom right, rgb(241, 240, 240), rgb(217, 217, 217));
     overflow: hidden;
-    width: 100vw;
+    width: 100%;
 
     &_container {
         position: relative;
@@ -45,6 +45,7 @@
         border-radius: 8px;
         z-index: 15;
         overflow: hidden;
+        width: calc(100% - 48px)
     }
 
     &_icon {
