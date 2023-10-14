@@ -1,0 +1,90 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.home {
+
+    &_firstContents {
+        margin-bottom: 40px;
+    }
+
+    &_wordRegisterTitle, &_wordListTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .text-color;
+    }
+
+    &_wordRegisterInputs {
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+    }
+
+    &_RegisterEnglish, &_RegisterJapanese {
+        display: flex;
+    }
+
+    &_RegisterEnglish {
+        margin-bottom: 16px;
+
+        @media screen and (max-width: 900px) {            
+            & input {
+                padding: 12px 14px;
+            }
+
+            & label {
+                top: -3px;
+            }
+        }
+
+    }
+
+    &_RegisterJapanese {
+        margin-bottom: 24px;
+
+        @media screen and (max-width: 900px) {            
+            & input {
+                padding: 12px 14px;
+            }
+
+            & label {
+                top: -3px;
+            }
+        }
+    }
+
+    &_wordRegister {
+        background-color: rgb(240, 119, 49);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(248, 135, 69);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+
+        &Wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+}

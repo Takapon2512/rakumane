@@ -1,0 +1,142 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.home {
+
+    &_secondContents {
+        margin-bottom: 32px;
+    }
+
+    &_wordRegisterTitle, &_wordListTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        @extend .text-color;
+    }
+
+    &_wordRegisterInputs {
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+    }
+
+    &_RegisterEnglish, &_RegisterJapanese {
+        display: flex;
+    }
+
+    &_RegisterEnglish {
+        margin-bottom: 16px;
+    }
+
+    &_RegisterJapanese {
+        margin-bottom: 24px;
+    }
+
+    &_wordRegister {
+        width: 160px;
+        background-color: rgb(240, 119, 49);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(248, 135, 69);
+        }
+
+        &Wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+
+    &_titleWrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    &_remainWrapper {
+        display: flex;
+        background-color: rgb(247, 77, 77);
+        border-radius: 20px;
+    }
+
+    &_remainRegister {
+        position: relative;
+        padding: 8px 12px 8px 16px;
+        font-weight: 600;
+        color: rgb(255, 238, 238);
+
+        &::after {
+            position: absolute;
+            display: block;
+            top: 20px;
+            right: -12px;
+            content: '';
+            width: 24px;
+            height: 1px;
+            background-color: rgb(255, 238, 238);
+            transform: rotate(90deg);
+        }
+    }
+
+    &_remainNumber {
+        padding: 8px 12px 8px 12px;
+        color: rgb(255, 238, 238);
+    }
+
+    &_wordRegisterList {
+        margin-bottom: 16px;
+    }
+
+    &_registerButton, &_deleteButton {
+        background-color: rgb(60, 123, 239);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+
+        &Wrapper {
+            display: flex;
+            justify-content: center;
+        }
+    }
+
+    &_deleteButton {
+        background-color: rgb(241, 39, 39);
+        margin-left: 8px;
+
+        &:hover {
+            background-color: rgb(241, 55, 55);
+        }
+    }
+
+    &_editTextField {
+
+        & input {
+            padding: 8px 12px;
+        }
+    }
+}

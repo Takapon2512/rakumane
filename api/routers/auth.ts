@@ -62,7 +62,7 @@ authRouter.post("/register", async (req, res) => {
         if (err) return res.status(500).json({ error: "DBとの接続に問題が発生しました。" });
         const sql = `INSERT INTO User (email, username, password, created_at, uid) VALUES (?, ?, ?, ?, ?)`;
 
-        con.query(sql, [email, name, hashedPassword,  now, randomUUID], (err: MysqlError | null) => {
+        con.query(sql, [email, name, hashedPassword, now, randomUUID], (err: MysqlError | null) => {
             if (err) return res.status(500).json({ error: "データベースへの挿入に失敗しました。" });
             console.log("データが挿入されました。");
         });

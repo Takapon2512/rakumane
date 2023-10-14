@@ -46141,6 +46141,35 @@ try {
 
 /***/ }),
 
+/***/ 2872:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAuthenticated = void 0;
+const jsonwebtoken_1 = __nccwpck_require__(7486);
+const isAuthenticated = (req, res, next) => {
+    var _a;
+    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+    if (!token)
+        return res.status(401).json({ error: "トークンがありません。" });
+    console.log(token);
+    (0, jsonwebtoken_1.verify)(token, process.env.SECRET_KEY || "", (err, decoded) => {
+        if (err)
+            return res.status(401).json({ error: "ログインする権限がありません。" });
+        if (decoded === undefined)
+            return res.status(401).json({ error: "ログインする権限がありません。" });
+        if (typeof decoded !== "string")
+            req.body.user_id = decoded.user_id;
+        next();
+    });
+};
+exports.isAuthenticated = isAuthenticated;
+
+
+/***/ }),
+
 /***/ 2744:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -46261,6 +46290,124 @@ exports.authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
 
 /***/ }),
 
+/***/ 7093:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.userRouter = void 0;
+const express_1 = __nccwpck_require__(1204);
+const server_1 = __nccwpck_require__(3431);
+const isAuthenticated_1 = __nccwpck_require__(2872);
+exports.userRouter = (0, express_1.Router)();
+//トークンから得られた情報を使ってユーザー情報を取得するAPI
+exports.userRouter.get("/find", isAuthenticated_1.isAuthenticated, (req, res) => {
+    //ユーザー情報を抽出
+    server_1.Pool.getConnection((err, con) => {
+        if (err)
+            return res.status(500).json({ error: "ユーザーの抽出ができません。" });
+        const sql = `SELECT * FROM User WHERE uid = ?`;
+        con.query(sql, [req.body.user_id], (err, result) => {
+            if (err || result.length === 0)
+                return res.status(401).json({
+                    error: "ユーザーが見つかりませんでした"
+                });
+            return res.status(200).json({
+                id: result[0].id, email: result[0].email, username: result[0].username, uid: result[0].uid
+            });
+        });
+        con.release();
+    });
+});
+
+
+/***/ }),
+
+/***/ 6635:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.wordRouter = void 0;
+const express_1 = __nccwpck_require__(1204);
+const server_1 = __nccwpck_require__(3431);
+const isAuthenticated_1 = __nccwpck_require__(2872);
+exports.wordRouter = (0, express_1.Router)();
+//ユーザーが登録した単語を探すAPI
+exports.wordRouter.get("/db_search", isAuthenticated_1.isAuthenticated, (req, res) => {
+    server_1.Pool.getConnection((err, con) => {
+        if (err)
+            return res.status(500).json({ error: "単語の抽出ができません。" });
+        const sql = `SELECT * FROM Word WHERE user_id = ?`;
+        con.query(sql, [req.body.user_id], (err, result) => {
+            if (err)
+                return res.status(500).json({ error: "単語の抽出に失敗しました。" });
+            console.log(result);
+            return res.status(200).json({ words: result });
+        });
+        con.release();
+    });
+});
+//現在時刻を取得するAPI
+exports.wordRouter.get("/get_time", (req, res) => {
+    const now = new Date();
+    return res.status(200).json({ now: now });
+});
+//単語をDBに登録するAPI
+exports.wordRouter.post("/db_register", (req, res) => {
+    const registerWords = req.body.dbRegisterWords;
+    server_1.Pool.getConnection((err, con) => {
+        if (err)
+            return res.status(500).json({ error: "単語の登録ができません" });
+        let insideErr = null;
+        registerWords.map((word) => {
+            const sql = `INSERT INTO Word (
+                english,
+                japanese,
+                created_at,
+                complete,
+                today_learning,
+                free_learning,
+                user_answer,
+                right_or_wrong,
+                correct_count,
+                question_count,
+                correct_rate,
+                user_word_id,
+                user_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            con.query(sql, [
+                word.english,
+                word.japanese,
+                word.created_at,
+                word.complete,
+                word.today_learning,
+                word.free_learning,
+                word.user_answer,
+                word.right_or_wrong,
+                word.correct_count,
+                word.question_count,
+                word.correct_rate,
+                word.user_word_id,
+                word.user_id
+            ], (err) => {
+                if (err)
+                    insideErr = err;
+                console.error(err);
+            });
+        });
+        con.release();
+        if (insideErr)
+            return res.status(500).json({ error: "データの登録ができませんでした。" });
+        return res.status(200).json({ message: "データ登録に成功しました。" });
+    });
+});
+
+
+/***/ }),
+
 /***/ 3431:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -46277,18 +46424,22 @@ const cors_1 = __importDefault(__nccwpck_require__(5863));
 __nccwpck_require__(4227);
 //router
 const auth_1 = __nccwpck_require__(2744);
+const user_1 = __nccwpck_require__(7093);
+const word_1 = __nccwpck_require__(6635);
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
 exports.Pool = (0, mysql_1.createPool)({
-    host: "localhost",
-    user: "root",
-    password: "Takakun32",
+    host: process.env.MYSQL_HOST || "",
+    user: process.env.MYSQL_USER || "",
+    password: process.env.MYSQL_PASSWORD || "",
     database: "rakumane",
     port: 8889
 });
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/v1/auth", auth_1.authRouter);
+app.use("/api/v1/user", user_1.userRouter);
+app.use("/api/v1/word", word_1.wordRouter);
 app.get("/", (req, res) => {
     exports.Pool.getConnection((err, connection) => {
         if (err)

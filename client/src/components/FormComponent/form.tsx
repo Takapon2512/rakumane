@@ -105,7 +105,7 @@ const Form = ({formTitle, buttonTitle, changeTitle}: {formTitle: string, buttonT
             login(token);
 
             setAlertFlag("成功");
-            // router.push("./mypage");
+            router.push("./mypage");
         } catch (err) {
             console.error(err);
             setAlertFlag("失敗");

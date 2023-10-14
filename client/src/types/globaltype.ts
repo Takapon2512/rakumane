@@ -17,7 +17,7 @@ export interface WordDBType {
     id: number;
     english: string;
     japanese: string;
-    created_at: Date;
+    created_at: string;
     deleted_at: Date | null;
     last_time_at: Date | null;
     complete: boolean;

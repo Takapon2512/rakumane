@@ -24,5 +24,7 @@ userRouter.get("/find", isAuthenticated, (req, res) => {
                 id: result[0].id, email: result[0].email, username: result[0].username, uid: result[0].uid 
             });
         });
+
+        con.release();
     });
 });

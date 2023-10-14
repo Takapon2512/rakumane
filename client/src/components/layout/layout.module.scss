@@ -1,0 +1,123 @@
+.text-color {
+    color: rgb(243, 243, 243);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 32px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+
+.layout {
+
+    &_container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    &_sidebar {
+        background-color: rgb(240, 119, 49);
+        min-height: 100vh;
+        z-index: 10;
+        transition: all 0.2s ease;
+    }
+    
+    &_sidebarList {
+        padding: 0 12px;
+    }
+
+    &_sidebarItem {
+        width: 100%;
+        height: 48px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 8px;
+        border-radius: 4px;
+
+        &:hover {
+            cursor: pointer;
+            background-color: rgb(233, 139, 85);
+        }
+    }
+
+    &_sidebarIcon, &_sidebarTitle {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        @extend .text-color;
+    }
+
+    &_sidebarIcon {
+        flex: 30%;
+        display: grid;
+        place-items: center;
+    }
+
+    &_sidebarTitle {
+        flex: 70%;
+    }
+
+    &_logOut {
+        display: flex;
+        width: 100%;
+        height: 48px;
+        align-items: center;
+        text-decoration: none;
+        padding: 8px 16px;
+
+        &:hover {
+            background-color: rgb(250, 71, 39);
+        }
+    }
+
+    &_imageWrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_image {
+        border-radius: 50%;
+
+        @media screen and (max-width: 900px) {
+            width: 64px;
+            height: 64px;
+        }
+    }
+
+    &_userWrapper {
+        margin-bottom: 32px;
+    }
+
+    &_user {
+        text-align: center;
+        font-weight: 600;
+        @extend .text-color;
+    }
+
+    &_sidebarControl {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: rgb(240, 119, 49);
+
+        &Icon {
+            color: #fff;
+            @extend .font-l;
+        }
+
+        &:hover {
+            background-color: rgb(240, 119, 49);
+        }
+    }
+}

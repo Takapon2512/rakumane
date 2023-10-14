@@ -1,0 +1,12 @@
+.alert {
+    position: absolute;
+    user-select: none;
+
+    &_success {
+        background-color: rgb(121, 201, 92);
+    }
+
+    &_error {
+        background-color: rgb(231, 82, 82);
+    }
+}

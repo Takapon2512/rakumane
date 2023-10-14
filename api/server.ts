@@ -5,6 +5,8 @@ import "dotenv/config";
 
 //router
 import { authRouter } from "./routers/auth";
+import { userRouter } from "./routers/user";
+import { wordRouter } from "./routers/word";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -21,6 +23,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/word", wordRouter);
 
 app.get("/", (req, res) => {
     Pool.getConnection((err, connection) => {

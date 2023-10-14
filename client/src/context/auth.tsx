@@ -37,14 +37,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         if (token) {
             apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
-            apiClient.get("/users/find").then((res) => {
-                setUser(res.data.user);
+            apiClient.get("/user/find").then((res) => {
+                setUser(res.data);
             }).catch((err) => {
                 console.error(err);
                 router.push("/login");
             });
 
-            apiClient.get("/posts/db_search");
+            apiClient.get("/word/db_search");
         };
         
     }, []);
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         try {
             apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
-            apiClient.get("/users/find").then(res => setUser(res.data.user));
+            apiClient.get("/user/find").then(res => setUser(res.data));
         } catch (err) {
             console.error(err);
         };
