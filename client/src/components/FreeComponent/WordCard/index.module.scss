@@ -1,0 +1,97 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.free {
+    &_firstContents {
+        margin-bottom: 40px;
+    }
+
+    &_memoryTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .text-color;
+    }
+
+    &_memoryCard {
+        position: relative;
+        padding: 24px 32px;
+        cursor: pointer;     
+    }
+
+    &_memoryCardContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &_memoryWord {
+        letter-spacing: 1px;
+        user-select: none;
+        @extend .text-color;
+    }
+
+    &_nextButtons {
+        display: flex;
+        justify-content: center;
+
+        &Icon {
+            font-size: 40px;
+        }
+    }
+
+    &_remembered, &_notRemembered, &_complete {
+        display: block;
+        width: 180px;
+        background-color: rgb(240, 138, 79);
+        color: rgb(243, 243, 243);
+        @extend .font-m;
+
+        &:hover {
+            background-color: rgb(240, 155, 95);
+        }
+    }
+
+    &_notRemembered {
+        background-color: rgb(60, 123, 239);
+        margin-left: 8px;
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+    }
+
+    &_questionCount {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        background-color: #d5d5d5;
+        border-top-left-radius: 4px;
+        user-select: none;
+
+        &Text {
+            @extend .text-color;
+        }
+    }
+
+}

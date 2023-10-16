@@ -18,8 +18,8 @@ export interface WordDBType {
     english: string;
     japanese: string;
     created_at: string;
-    deleted_at: Date | null;
-    last_time_at: Date | null;
+    deleted_at: string | null;
+    last_time_at: string | null;
     complete: boolean;
     today_learning: boolean;
     free_learning: boolean;

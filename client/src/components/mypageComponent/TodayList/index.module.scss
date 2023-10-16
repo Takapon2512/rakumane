@@ -1,0 +1,70 @@
+.text-color {
+    color: rgb(255, 255, 255);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.home {
+    &_wordRegisterTitle, &_wordListTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        color: rgb(48, 48, 48);
+    }
+
+    &_todayWordList {
+        margin-bottom: 16px;
+    }
+
+    &_buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_prev, &_next {
+        @extend .text-color;
+    }
+
+    &_prev {
+        margin-right: 8px;
+        background-color: rgb(60, 123, 239);
+        
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_next {
+        background-color: rgb(241, 39, 39);
+
+        &:hover {
+            background-color: rgb(2410, 55, 55);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_info {
+        line-height: 1.6;
+    }
+}

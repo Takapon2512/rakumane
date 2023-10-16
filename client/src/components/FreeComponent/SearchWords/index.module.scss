@@ -1,0 +1,176 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.free {
+    
+    &_firstContents {
+        margin-bottom: 40px;
+    }
+
+    &_searchTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .text-color;
+    }
+
+    &_searchInputs {
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    &_searchKeyword {
+        margin-bottom: 16px;
+    }
+
+    &_searchNumber {
+        align-items: center;
+        margin-bottom: 16px;
+
+        &Middle {
+            width: 96px;
+            text-align: center;
+            @extend .font-l;
+        }
+    }
+
+    &_searchButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_search, &_reset {
+        width: 160px;
+        background-color: rgb(60, 123, 239);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_reset {
+        background-color: rgb(241, 39, 39);
+        margin-left: 8px;
+        
+        &:hover {
+            background-color: rgb(241, 55, 55);
+        }
+    }
+
+    &_searchList {
+        margin-top: 32px;
+    }
+
+    &_registerButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_register, &_all {
+        background-color: rgb(60, 123, 239);
+        color: rgb(255, 255, 255);
+        margin-top: 32px;
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_all {
+        background-color: rgb(241, 39, 39);
+        margin-left: 8px;
+
+        &:hover {
+            background-color: rgb(241, 55, 55);
+        }
+    }
+
+    &_pageButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_before, &_next {
+        background-color: rgb(184, 184, 184);
+        color: rgb(255, 255, 255);
+        margin-top: 12px;
+
+        &:hover {
+            background-color: rgb(184, 184, 184);    
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_next {
+        background-color: rgb(184, 184, 184);
+        margin-left: 8px;
+    }
+
+    &_correctRateButtons {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    &_weakButton, &_normalButton, &_goodButton {
+        border: 1px solid rgb(187, 187, 187);
+        color: rgb(116, 116, 116);
+        font-weight: 300;
+        margin-right: 8px;
+
+        @media screen and (min-width: 900px) {            
+            &:hover {
+                background-color: rgb(241, 39, 39);
+                color: #fff;
+                border: 1px solid transparent;
+            }
+        }
+
+    }
+
+    &_normalButton {
+        @media screen and (min-width: 900px) {            
+            &:hover {
+                background-color: rgb(240, 119, 49);
+            }
+        }
+    }
+
+    &_goodButton {
+        @media screen and (min-width: 900px) {
+            &:hover {
+                background-color: rgb(60, 123, 239);
+            }
+        }
+    }
+
+}

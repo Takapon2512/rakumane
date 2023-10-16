@@ -108,13 +108,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         try {
             const token: string | undefined = document.cookie?.split('=')[1];
             if (token === undefined) router.push("/login");
-            const response = await apiClient.get("/posts/db_search_memorize", {
+            const response = await apiClient.get("/word/today_learning", {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             });
             
-            setUserWords(response.data);
+            setUserWords(response.data.words);
         } catch(err) {
             console.error(err);
         };
@@ -125,9 +125,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         setUserData(user);
     }, [user]);
 
-    // useEffect(() => {
-    //     getUserWords();
-    // }, []);
+    useEffect(() => {
+        getUserWords();
+    }, []);
 
     return (
         <Box 

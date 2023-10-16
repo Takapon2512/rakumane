@@ -1,0 +1,9 @@
+.free {
+    width: calc(100vw - 248px);
+    padding: 40px 24px;
+    background-color: rgb(247, 242, 242);
+
+    @media screen and (max-width: 900px) {
+        width: 100vw;
+    }
+}
