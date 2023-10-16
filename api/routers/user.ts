@@ -4,7 +4,7 @@ import { MysqlError } from "mysql";
 import { isAuthenticated } from "../middleware/isAuthenticated";
 
 //type
-import { UserType } from "../types/globalType";
+import { UserType, SettingType } from "../types/globalType";
 
 export const userRouter = Router();
 
@@ -26,5 +26,18 @@ userRouter.get("/find", isAuthenticated, (req, res) => {
         });
 
         con.release();
+    });
+});
+
+//制限時間を取得するAPI
+userRouter.get("/find_setting", isAuthenticated, (req, res) => {
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "設定情報を抽出できません。" });
+
+        const sql = `SELECT * FROM Setting WHERE user_id = ?`;
+        con.query(sql, [req.body.user_id], (err: MysqlError | null, result: SettingType[]) => {
+            if (err) return res.status(500).json({ error: "設定情報の抽出に失敗しました。" });
+            return res.status(200).json({ setting: result[0]});
+        });
     });
 });

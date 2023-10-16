@@ -29,3 +29,14 @@ export type WordDBType = {
     user_word_id: number;
     user_id: string;
 };
+
+export type SettingType = {
+    id: number;
+    work_on_count: number;
+    icon_url: string | null;
+    time_constraint: number;
+    created_at: string;
+    updated_at: string | null;
+    deleted_at: string | null;
+    user_id: string;
+};
