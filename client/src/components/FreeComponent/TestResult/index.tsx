@@ -100,13 +100,10 @@ const TestResult = ({ dbWords }: { dbWords: WordDBType[] }) => {
                 free_learning: false
             }
         ));
-
-        await apiClient.post("/posts/db_finish", {
+        await apiClient.post("/word/free_reset", {
             finishQuestionWords: finishQuestionWords
         });
-
         router.push("/mypage");
-        
     };
 
     return (

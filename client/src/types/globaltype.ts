@@ -60,7 +60,7 @@ export type SettingType = {
 
 export type CalendarType = {
     id: number;
-    learning_date: Date;
-    created_at: Date;
-    user_id: number;
-}
+    learning_date: string;
+    created_at: string;
+    user_id: string;
+};

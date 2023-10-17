@@ -1,0 +1,59 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.inputs {
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 40px;
+
+    &_searchNumber {
+        align-items: center;
+        margin-bottom: 16px;
+
+        &Middle {
+            width: 96px;
+            text-align: center;
+            @extend .font-l;
+        }
+    }
+
+    &_searchButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_search, &_reset {
+        width: 160px;
+        background-color: rgb(60, 123, 239);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_keyword {
+        margin-bottom: 16px;
+    }
+}

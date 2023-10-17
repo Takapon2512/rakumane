@@ -1,0 +1,57 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.calendar {
+    &_paper {
+        padding: 24px 32px;
+        background-color: #fff;
+        border-radius: 4px;
+    }
+
+    &_container {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        border: 1px solid rgb(209, 209, 209);
+    }
+
+    &_monthDisplay {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    &_before, &_next {
+        padding: 0;
+        @extend .text-color;
+    }
+
+    &_before {
+        margin-right: 8px;
+
+        &:hover {
+            background-color: rgb(208, 225, 255);
+        }
+    }
+    
+    &_next:hover {
+        background-color: rgb(255, 225, 208);
+    }    
+}

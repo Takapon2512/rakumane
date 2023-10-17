@@ -1,0 +1,77 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.question {
+
+    &_title {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .font-l;
+        @extend .text-color;
+    }
+
+    &_container {
+        padding: 24px 32px;
+        background-color: #fff;
+        border-radius: 4px;
+        margin-bottom: 40px;
+    }
+
+    &_time, &_amount {
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    &_timeTitle, &_amountTitle {
+        min-width: 28%;
+        @extend .text-color;
+
+        @media screen and (max-width: 900px) {
+            margin-bottom: 8px;
+        }
+    }
+
+    &_amountCoutionTitle {
+        font-size: 12px;
+        color: rgb(153, 153, 153);
+        letter-spacing: 0.5px;
+    }
+
+    &_button {
+        width: 120px;
+        background-color: rgb(240, 119, 49);
+        color: #fff;
+
+        &:hover {
+            background-color: rgb(240, 119, 49);
+            color: #fff;
+        }
+
+        &Wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+}

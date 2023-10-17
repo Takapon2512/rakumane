@@ -1,0 +1,92 @@
+.editing {
+
+    &_wordDetail {
+        margin: 24px 0;
+    }
+
+    &_English, &_Japanese {
+        display: flex;
+        margin-bottom: 16px;
+    }
+
+    &_EnglishTitle, &_JapaneseTitle {
+        display: flex;
+        align-items: center;
+        min-width: 120px;
+    }
+
+    &_buttons {
+        display: flex;
+        justify-content: center;
+    }
+
+    &_register, &_delete {
+        color: rgb(255, 255, 255);
+    }
+
+    &_register {
+        background-color: rgb(60, 123, 239);
+        margin-right: 8px;
+
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_delete {
+        background-color: rgb(241, 39, 39);
+
+        &:hover {
+            background-color: rgb(241, 60, 60);
+        }
+    }
+
+    &_close {
+        position: relative;
+        top: 0;
+        right: 0;
+
+        &:hover {
+            background-color: #fff;
+        }
+    }
+
+    &_span {
+        background-color: rgb(196, 196, 196);
+        width: 32px;
+        height: 4px;
+
+        &:nth-child(1) {
+            position: absolute;
+            transform: rotate(45deg);
+            border-radius: 4px;
+        }
+
+        &:nth-child(2) {
+            position: absolute;
+            transform: rotate(-45deg);
+            border-radius: 4px;
+        }
+    }
+
+    &_targetBox {
+        display: flex;
+        margin-bottom: 16px;
+    }
+
+    &_targetTitle {
+        display: flex;
+        align-items: center;
+        width: 120px;
+    }
+    &_targetWord {
+        padding: 8px 12px;
+        background-color: rgb(255, 240, 211);
+        border-radius: 4px;
+        color: rgb(48, 48, 48);
+    }
+}

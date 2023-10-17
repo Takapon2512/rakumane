@@ -1,0 +1,72 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.calendar {
+    &_days {
+        border: 1px solid rgb(209, 209, 209);
+        min-height: 120px;
+    }
+
+    &_dayWrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &_week {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 20px;
+        margin-top: 4px;
+        border-radius: 4px;
+        @extend .font-s;
+    }
+
+    &_day {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+        height: 20px;
+        @extend .font-s;
+    }
+
+    &_memorize {
+        display: flex;
+        padding: 24px 0 16px;
+        justify-content: center;
+    }
+
+    &_dayWrapper {
+        padding-top: 4px;
+    }
+
+    &_completion {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 4px;
+        transform: rotate(-12deg);
+        pointer-events: none;
+        @extend .font-l;
+    }
+}

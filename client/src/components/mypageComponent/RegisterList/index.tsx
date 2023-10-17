@@ -112,8 +112,6 @@ const RegisterList = ({ dbWords }: { dbWords: WordDBType[] }) => {
 
     //アラート発報管理
     const [alertFlag, setAlertFlag] = useState<string>("");
-    console.log(registered);
-
 
     //編集モードにする 
     const handleWordEditing = (word: WordDataType, index: number) => {

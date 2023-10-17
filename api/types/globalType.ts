@@ -40,3 +40,17 @@ export type SettingType = {
     deleted_at: string | null;
     user_id: string;
 };
+
+export type CalendarType = {
+    id: number;
+    learning_date: string;
+    created_at: string;
+    user_id: string;
+};
+
+export type ResUserType = {
+    id: number,
+    email: string,
+    username: string
+    uid: string;
+};

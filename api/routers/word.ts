@@ -13,7 +13,7 @@ wordRouter.get("/db_search", isAuthenticated, (req, res) => {
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "単語の抽出ができません。" });
 
-        const sql = `SELECT * FROM Word WHERE user_id = ?`;
+        const sql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
         con.query(sql, [req.body.user_id], (err: MysqlError | null, result: WordDBType[]) => {
             if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
 
@@ -102,7 +102,7 @@ wordRouter.get("/search", isAuthenticated, (req, res) => {
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "単語を取得できません。" });
 
-        const sql = `SELECT * FROM Word WHERE user_id = ?`;
+        const sql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
         con.query(sql, [req.body.user_id], (err: MysqlError | null, result: WordDBType[]) => {
             if (err) return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
@@ -266,3 +266,81 @@ wordRouter.get("/get_result", isAuthenticated, (req, res) => {
         });
     });
 });
+
+//complete、free_learning、user_answer、right_or_wrongを元に戻すAPI
+wordRouter.post("/free_reset", (req, res) => {
+    const targetWords: WordDBType[] = req.body.finishQuestionWords;
+
+    Pool.getConnection((err, con) => {
+        let insideErr: MysqlError | null = null; 
+        if (err) return res.status(500).json({ error: "データをリセットできません。" });
+
+        targetWords.map((word) => {
+            const sql = `UPDATE Word SET
+                complete = false,
+                free_learning = false,
+                user_answer = "",
+                right_or_wrong = false 
+                WHERE user_id = ? AND user_word_id = ?
+            `;
+
+            con.query(sql, [word.user_id, word.user_word_id], (err) => {
+                if (err) {
+                    insideErr = err;
+                    console.error(err);
+
+                    return res.status(500).json({ error: "データのリセットに失敗しました。" });
+                };
+            });
+        });
+        con.release();
+    });
+    return res.status(200).json({ message: "データのリセットが完了しました。" });
+});
+
+//単語を編集するAPI
+wordRouter.post("/edit", (req, res) => {
+    const targetWord: WordDBType = req.body.editWord;
+    
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "単語を編集できません。" });
+
+        const sql = `UPDATE Word SET 
+            english = ?,
+            japanese = ? 
+            WHERE user_id = ? AND user_word_id = ?
+        `;
+
+        con.query(sql, [
+            targetWord.english, 
+            targetWord.japanese, 
+            targetWord.user_id, 
+            targetWord.user_word_id
+        ], (err) => {
+            if (err) return res.status(500).json({ error: "単語の編集に失敗しました。" });
+            return res.status(200).json({ message: "単語の編集が完了しました。" });
+        });
+
+        con.release();
+    });
+});
+
+//単語を削除するAPI
+wordRouter.post("/delete", (req, res) => {
+    const targetWord: WordDBType = req.body.deleteWord;
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "単語を削除できません。" });
+        
+        const sql = `UPDATE Word SET deleted_at = ? WHERE user_id = ? AND user_word_id = ?`;
+        con.query(sql, [formattedDate, targetWord.user_id, targetWord.user_word_id], (err) => {
+            if (err) return res.status(500).json({ error: "単語の削除に失敗しました。" });
+            return res.status(200).json({ message: "単語を削除しました。" });
+        });
+
+        con.release();
+    });
+});
+

@@ -1,0 +1,45 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.inputs {
+    &_pageButtons {
+        display: flex;
+        justify-content: center;
+    }
+    
+    &_before, &_next {
+        background-color: rgb(184, 184, 184);
+        color: rgb(255, 255, 255);
+        margin-top: 12px;
+    
+        &:hover {
+            background-color: rgb(184, 184, 184);    
+        }
+    
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+    
+    &_next {
+        background-color: rgb(184, 184, 184);
+        margin-left: 8px;
+    }
+}
