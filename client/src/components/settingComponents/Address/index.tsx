@@ -66,6 +66,10 @@ const Address = () => {
         return false;
     };
 
+    const forbidden = () => {
+        return false;
+    }
+
     useEffect(() => {
         setAlertFlag("");
     }, []);

@@ -26,7 +26,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/word", wordRouter);
-app.use(scheduleRouter);
+app.use("/api/v1/schedule", scheduleRouter);
 
 app.get("/", (req, res) => {
     Pool.getConnection((err, connection) => {

@@ -143,3 +143,22 @@ userRouter.post("/question_upload", (req, res) => {
 });
 
 //退会の手続きを行うAPI
+userRouter.post("/unsubscribe", (req, res) => {
+    const userData: ResUserType = req.body.user;
+
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "退会できません。" });
+
+        const sql = `UPDATE User SET deleted_at = ? WHERE uid = ?`;
+        con.query(sql, [formattedDate, userData.uid], (err) => {
+            if (err) return res.status(500).json({ error: "退会手続きに失敗しました。" });
+        });
+    
+        con.release();
+    });
+
+    return res.status(200).json({ message: "削除が完了しました。" });
+});

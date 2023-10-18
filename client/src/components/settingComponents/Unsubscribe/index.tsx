@@ -20,18 +20,14 @@ import styles from "./index.module.scss";
 //utils
 import { notoSansJP } from '@/utils/font';
 
+
 const Unsubscribe = () => {
     const router = useRouter();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const handleUnsubscribe = async () => {
-        const token = document.cookie?.split("=")[1];
 
         try {
-            await apiClient.post("/users/unsubscribe", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+            await apiClient.post("/user/unsubscribe", { user: user });
             
             logout();
             router.push("/");
