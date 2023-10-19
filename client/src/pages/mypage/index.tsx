@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { useRouter } from 'next/router';
 
 //lib
 import { apiClient } from '@/lib/apiClient';

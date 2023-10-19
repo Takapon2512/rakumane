@@ -18,20 +18,20 @@ import WordCard from '@/components/memorizeComponent/WordCard';
 import { WordDBType } from '@/types/globaltype';
 type Props = {
   words: WordDBType[]
-}
+};
 
 //SSR
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const token: string | undefined = context.req.headers.cookie?.split('=')[1];
-    const response = await apiClient.get("/posts/db_search_memorize", {
+    const response = await apiClient.get("/word/db_search_memorize", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     return {
-      props: { words: response.data }
+      props: { words: response.data.words }
     }
   } catch (err) {
     console.error(err);

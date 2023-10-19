@@ -54,9 +54,12 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
   //アラートの管理
   const [alert, setAlert] = useState<string>("");
 
+  //選択肢を管理
+  const [answerItems, setAnswerItems] = useState<WordDBType[]>([]);
+
   //出題状態の単語のみを取得
   const questionWords: Array<WordDBType> = 
-  dbWords.filter((word: WordDBType) => Number(word.free_learning) === Number(true));
+  dbWords.filter((word: WordDBType) => Number(word.complete) === Number(true));
 
   //問題番号の配列を作成
   let intNumArr: Array<number> = [...Array(questionWords.length)].map((_, i: number) => i);
@@ -135,13 +138,10 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
   const confirmResult = async () => {
 
     try {
-      const now: Date = new Date(Date.now());
-      const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
 
       const dbRequest: Array<WordDBType> = questionWords.map((word: WordDBType) => (
         {
           ...word,
-          last_time_at: formattedDate,
           correct_rate: Math.round((word.correct_count / word.question_count) * 100),
         }
       ));
@@ -161,27 +161,33 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
     router.push("/mypage/free/result");
   };
 
-  let choiceArr: Array<WordDBType> = [];
+  const selectAnswer = () => {
+    let choiceArr: Array<WordDBType> = [];
+      
+    //0~3の数字配列を作成し、シャッフル
+    let randomArr: Array<number> = [...Array(4)].map((_, i) => i);
+    randomArr.forEach((_, index: number) => {
+        const randomNum: number = Math.floor(Math.random() * (index + 1));
+        [randomArr[index], randomArr[randomNum]] = [randomArr[randomNum], randomArr[index]];
+    });
     
-  //0~3の数字配列を作成し、シャッフル
-  let randomArr: Array<number> = [...Array(4)].map((_, i) => i);
-  randomArr.forEach((_, index: number) => {
-      const randomNum: number = Math.floor(Math.random() * (index + 1));
-      [randomArr[index], randomArr[randomNum]] = [randomArr[randomNum], randomArr[index]];
-  });
+    for (let i = 0; i < randomArr.length; i++) {
+        let intIndex: number = (problemNum - 1) + randomArr[i];
+        if (intNum.length <= intIndex) {
+          intIndex -= intNum.length;
+        };
   
-  for (let i = 0; i < randomArr.length; i++) {
-      let intIndex: number = (problemNum - 1) + randomArr[i];
-      if (intNum.length <= intIndex) {
-        intIndex -= intNum.length;
-      };
+        let word: WordDBType = questionWords[intNum[intIndex]];
+        choiceArr.push(word);
+    };
 
-      let word: WordDBType = questionWords[intNum[intIndex]];
-      choiceArr.push(word);
+    setAnswerItems(choiceArr);
   };
-  console.log(questionWords);
-  console.log(choiceArr);
-  console.log(randomArr);
+
+  useEffect(() => {
+    selectAnswer();
+  }, [problemNum]);
+
 
   //選択肢をクリックしたときの処理
   const clickChoice = (word: WordDBType) => {
@@ -197,19 +203,19 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
     setRemainTime(settingTime);
   };
 
-  // useEffect(() => {
-  //   //次の問題に遷移し、解答状況をDBに反映する
-  //   if (remainTime < 0 && problemNum <= questionWords.length) handlePass();
+  useEffect(() => {
+    //次の問題に遷移する
+    if (remainTime < 0 && problemNum <= questionWords.length) handlePass();
 
-  //   if (problemNum < questionWords.length + 1) {
-  //     const timer: NodeJS.Timer = setInterval(() => {
-  //       setRemainTime(prev => prev > -1 ? prev - 1 : settingTime);
-  //     }, 1000);
-  //     return () => {
-  //       clearInterval(timer);
-  //     };
-  //   };
-  // }, [remainTime]);
+    if (problemNum < questionWords.length + 1) {
+      const timer = setInterval(() => {
+        setRemainTime(prev => prev > -1 ? prev - 1 : settingTime);
+      }, 1000);
+      return () => {
+        clearInterval(timer);
+      };
+    };
+  }, [remainTime]);
 
   return (
     <>
@@ -340,7 +346,7 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
               >
                   <List>
                       {
-                      choiceArr.map((word: WordDBType, index: number) => (
+                      answerItems.map((word: WordDBType, index: number) => (
                           <ListItem 
                           className={styles.free_choice}
                           key={index}

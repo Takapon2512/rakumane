@@ -15,7 +15,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import QuizIcon from '@mui/icons-material/Quiz';
 
 //CSS
-import styles from "./WordCard.module.scss";
+import styles from "./index.module.scss";
 
 //type
 import { WordDBType } from '@/types/globaltype';
@@ -37,7 +37,7 @@ const WordCard = ({ todayWords }: { todayWords: WordDBType[] }) => {
     const [ejSwitch, setEJSwitch] = useState<boolean>(true);
 
     //completeがfalseの単語のみを取得
-    const incompleteWords: Array<WordDBType> = memorizeWords.filter(word => word.complete === false);
+    const incompleteWords: Array<WordDBType> = memorizeWords.filter(word => Number(word.complete) === Number(false));
 
     //現在の問題番号を管理
     const [problemNum, setProblemNum] = useState<number>(1);
@@ -113,14 +113,15 @@ const WordCard = ({ todayWords }: { todayWords: WordDBType[] }) => {
     };
 
     const handleToTest = async () => {
-        await apiClient.post("/posts/db_learning", { dbRequest: manageWords });
+        console.log(memorizeWords);
+        await apiClient.post("/word/memorize_complete", { dbRequest: memorizeWords });
         router.push("/mypage/memorization/test");
     };
 
     //テストモードに遷移した後に、暗記モードのトップ画面に戻り「暗記する」ボタンを押しても暗記カードで学習に取り組めるようにする
-    useEffect(() => {
-        setManageWords(todayWords);
-    }, []);
+    // useEffect(() => {
+    //     setManageWords(todayWords);
+    // }, []);
 
     return (
         <Box className={styles.memorize_firstContents}>

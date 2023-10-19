@@ -6,14 +6,14 @@ import { isAuthenticated } from "../middleware/isAuthenticated";
 
 //type
 import { UserType, SettingType, CalendarType, ResUserType } from "../types/globalType";
-interface SendDataType {
+type SendDataType = {
     name: string;
     email: string;
     currentPassword: string;
     newPassword: string;
     confirmPassword: string;
     user: ResUserType
-}
+};
 
 export const userRouter = Router();
 
@@ -48,11 +48,29 @@ userRouter.get("/find_setting", isAuthenticated, (req, res) => {
             if (err) return res.status(500).json({ error: "設定情報の抽出に失敗しました。" });
             return res.status(200).json({ setting: result[0]});
         });
+
+        con.release();
     });
 });
 
 //暗記モードで学習した日を記録するAPI
+userRouter.post("/complete", (req, res) => {
+    const user: ResUserType = req.body.userData;
 
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "学習日を記録できません。" });
+
+        const sql = `INSERT INTO Calendar (learning_date, created_at, user_id) VALUES (?, ?, ?)`;
+        con.query(sql, [formattedDate, formattedDate, user.uid], (err) => {
+            if (err) return res.status(500).json({ error: "学習日の記録に失敗しました。" });
+            return res.status(201).json({ message: "学習日を記録しました。" });
+        });
+        con.release();
+    });
+});
 
 //暗記モードで学習した日を取得するAPI
 userRouter.get("/get_memorize_day", isAuthenticated, (req, res) => {
@@ -64,6 +82,8 @@ userRouter.get("/get_memorize_day", isAuthenticated, (req, res) => {
             if (err) return res.status(500).json({ error: "学習日の抽出に失敗しました。" });
             return res.status(200).json({ calendars: result });
         });
+
+        con.release();
     });
 });
 
@@ -113,13 +133,12 @@ userRouter.post("/address_upload", (req, res) => {
             const hashedPassword = hashSync(newPassword, genSaltSync(10));
             con.query(updateSql, [hashedPassword, user.uid], (err) => {
                 if (err) return res.status(500).json({ error: "パスワードの変更に失敗しました。" });
+                return res.status(200).json({ message: "設定情報を変更しました。" });
             });
 
             con.release();
         });
     };
-
-    return res.status(200).json({ message: "設定情報を変更しました。" });
 });
 
 //モード設定を編集するAPI
@@ -136,10 +155,12 @@ userRouter.post("/question_upload", (req, res) => {
         const sql = `UPDATE Setting SET time_constraint = ?, work_on_count = ? WHERE user_id = ?`;
         con.query(sql, [num_timeLimit, num_questions, user.uid], (err) => {
             if (err) return res.status(500).json({ error: "モード設定の変更に失敗しました。" });
+            return res.status(200).json({ message: "モード設定を変更しました。" });
         });
+
+        con.release();
     });
     
-    return res.status(200).json({ message: "モード設定を変更しました。" });
 });
 
 //退会の手続きを行うAPI
@@ -155,10 +176,9 @@ userRouter.post("/unsubscribe", (req, res) => {
         const sql = `UPDATE User SET deleted_at = ? WHERE uid = ?`;
         con.query(sql, [formattedDate, userData.uid], (err) => {
             if (err) return res.status(500).json({ error: "退会手続きに失敗しました。" });
+            return res.status(200).json({ message: "退会手続きが完了しました。" });
         });
     
         con.release();
     });
-
-    return res.status(200).json({ message: "削除が完了しました。" });
 });

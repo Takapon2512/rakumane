@@ -4,7 +4,7 @@ import { MysqlError } from "mysql";
 import { isAuthenticated } from "../middleware/isAuthenticated";
 
 //type
-import { WordDBType } from "../types/globalType";
+import { ResUserType, WordDBType } from "../types/globalType";
 
 export const wordRouter = Router();
 
@@ -14,6 +14,22 @@ wordRouter.get("/db_search", isAuthenticated, (req, res) => {
         if (err) return res.status(500).json({ error: "単語の抽出ができません。" });
 
         const sql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
+        con.query(sql, [req.body.user_id], (err: MysqlError | null, result: WordDBType[]) => {
+            if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
+
+            return res.status(200).json({ words: result });
+        });
+
+        con.release();
+    });
+});
+
+//ユーザーが登録した単語を探すAPI（暗記モード）
+wordRouter.get("/db_search_memorize", isAuthenticated, (req, res) => {
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "単語の抽出ができません。" });
+
+        const sql = `SELECT * FROM Word WHERE user_id = ? AND today_learning = true`;
         con.query(sql, [req.body.user_id], (err: MysqlError | null, result: WordDBType[]) => {
             if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
 
@@ -196,6 +212,31 @@ wordRouter.post("/free_complete", (req, res) => {
     });
 });
 
+//暗記カードを終了したフラグをつけるAPI（暗記）
+wordRouter.post("/memorize_complete", (req, res) => {
+    const completeWords: WordDBType[] = req.body.dbRequest;
+
+    Pool.getConnection((err, con) => {
+        let insideErr: MysqlError | null = null; 
+        if (err) return res.status(500).json({ error: "completeフラグをつけられません。" });
+
+        completeWords.map(word => {
+            const sql = `UPDATE Word SET complete = true WHERE user_id = ? AND user_word_id = ?`;
+            con.query(sql, [word.user_id, word.user_word_id], (err) => {
+                if (err) {
+                    insideErr = err;
+                    console.error(err);
+                }
+            });
+        });
+
+        con.release();
+
+        if (insideErr) return res.status(500).json({ error: "completeフラグの変更に失敗しました。" });
+        return res.status(200).json({ message: "completeフラグを変更しました。" });
+    });
+});
+
 //テストする単語を取得するAPI（free）
 wordRouter.get("/free_complete_test", isAuthenticated, (req, res) => {
     Pool.getConnection((err, con) => {
@@ -209,9 +250,26 @@ wordRouter.get("/free_complete_test", isAuthenticated, (req, res) => {
     });
 });
 
+//テスト単語を取得するAPI（暗記）
+wordRouter.get("/memorize_complete_test", isAuthenticated, (req, res) => {
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "単語の取得ができません。" });
+
+        const sql = `SELECT * FROM Word WHERE complete = true AND user_id = ?`;
+        con.query(sql, [req.body.user_id], (err, result: WordDBType[]) => {
+            if (err) return res.status(500).json({ error: "単語の取得に失敗しました。" });
+            return res.status(200).json({ words: result });
+        });
+    });
+});
+
+
+
 //テストの結果を送信するAPI
 wordRouter.post("/test_send", (req, res) => {
     const targetWords: WordDBType[] = req.body.dbRequest;
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
 
     Pool.getConnection((err, con) => {
         let insideErr: MysqlError | null = null; 
@@ -229,7 +287,7 @@ wordRouter.post("/test_send", (req, res) => {
             `;
 
             const values = [
-                word.last_time_at,
+                formattedDate,
                 word.user_answer,
                 word.right_or_wrong,
                 word.correct_count,
@@ -249,9 +307,8 @@ wordRouter.post("/test_send", (req, res) => {
 
         con.release();
         if (insideErr) return res.status(500).json({ error: "テスト結果の記録が失敗しました。" });
+        return res.status(200).json({ message: "テスト結果の記録が完了しました。" });
     });
-
-    return res.status(200).json({ message: "テスト結果の記録が完了しました。" });
 });
 
 //テスト結果を取得するAPI
@@ -264,10 +321,12 @@ wordRouter.get("/get_result", isAuthenticated, (req, res) => {
             if (err) return res.status(500).json({ error: "テスト結果の取得に失敗しました。" });
             return res.status(200).json({ results: result });
         });
+
+        con.release();
     });
 });
 
-//complete、free_learning、user_answer、right_or_wrongを元に戻すAPI
+//complete、free_learning、user_answer、right_or_wrongを元に戻すAPI（free）
 wordRouter.post("/free_reset", (req, res) => {
     const targetWords: WordDBType[] = req.body.finishQuestionWords;
 
@@ -289,13 +348,73 @@ wordRouter.post("/free_reset", (req, res) => {
                     insideErr = err;
                     console.error(err);
 
-                    return res.status(500).json({ error: "データのリセットに失敗しました。" });
                 };
             });
         });
         con.release();
+        if (insideErr) return res.status(500).json({ error: "データのリセットに失敗しました。" });
+        return res.status(200).json({ message: "データのリセットが完了しました。" });
     });
-    return res.status(200).json({ message: "データのリセットが完了しました。" });
+    
+});
+
+//complete、user_answer、right_or_wrongを元に戻すAPI（暗記）
+wordRouter.post("/memorize_reset", (req, res) => {
+    const targetWords: WordDBType[] = req.body.finishQuestionWords;
+
+    Pool.getConnection((err, con) => {
+        let insideErr: MysqlError | null = null; 
+        if (err) return res.status(500).json({ error: "データをリセットできません。" });
+
+        targetWords.map((word) => {
+            const sql = `UPDATE Word SET
+                complete = false,
+                user_answer = "",
+                right_or_wrong = false 
+                WHERE user_id = ? AND user_word_id = ?
+            `;
+
+            con.query(sql, [word.user_id, word.user_word_id], (err) => {
+                if (err) {
+                    insideErr = err;
+                    console.error(err);
+
+                };
+            });
+        });
+        
+        con.release();
+        if (insideErr) return res.status(500).json({ error: "データのリセットに失敗しました。" });
+        return res.status(200).json({ message: "データのリセットが完了しました。" });
+    });
+});
+
+//テスト中に中断した際のリセット処理をするAPI
+wordRouter.post("/reset", isAuthenticated, (req, res) => {
+
+    Pool.getConnection((err, con) => {
+        if (err) return res.status(500).json({ error: "処理ができません。" });
+
+        const flagSql = `SELECT * FROM Word WHERE user_id = ? AND complete = true`;
+        con.query(flagSql, [req.body.user_id], (err: MysqlError | null, words: WordDBType[]) => {
+            if (err) return res.status(500).json({ error: "単語の抽出ができません。" });
+            if (words.length > 0) {
+                const resetSql = `UPDATE Word SET 
+                    complete = false,
+                    free_learning = false,
+                    user_answer = "",
+                    right_or_wrong = false WHERE user_id = ?
+                `;
+
+                con.query(resetSql, [req.body.user_id], (err) => {
+                    if (err) return res.status(500).json({ error: "リセット処理に失敗しました。" });
+                    return res.status(200).json({ message: "リセット処理が完了しました。" });
+                });
+            };
+        });
+
+        con.release();
+    });
 });
 
 //単語を編集するAPI
@@ -320,9 +439,10 @@ wordRouter.post("/edit", (req, res) => {
             if (err) return res.status(500).json({ error: "単語の編集に失敗しました。" });
             return res.status(200).json({ message: "単語の編集が完了しました。" });
         });
-
+        
         con.release();
     });
+
 });
 
 //単語を削除するAPI
@@ -339,8 +459,9 @@ wordRouter.post("/delete", (req, res) => {
             if (err) return res.status(500).json({ error: "単語の削除に失敗しました。" });
             return res.status(200).json({ message: "単語を削除しました。" });
         });
-
+        
         con.release();
     });
+
 });
 

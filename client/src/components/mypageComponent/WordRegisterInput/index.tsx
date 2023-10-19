@@ -38,6 +38,9 @@ const WordRegisterInput = ({ dbWords }: { dbWords: WordDBType[] }) => {
     //入力を検知
     const [composing, setComposing] = useState<boolean>(false);
 
+    //ロード管理
+    const [load, setLoad] = useState<boolean>(false);
+
     const handleWordsAdd = async () => {
         //日付を取得する
         const now: Date = new Date(Date.now());
@@ -114,6 +117,26 @@ const WordRegisterInput = ({ dbWords }: { dbWords: WordDBType[] }) => {
             console.error(err);
         };
     };
+
+    //単語の状態をリセットする処理
+    const resetWordStatus = async () => {
+        try {
+            const token: string | undefined = document.cookie?.split('=')[1];
+            await apiClient.post("/word/reset", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        };
+    };
+
+    
+    useEffect(() => {
+        setLoad(true);
+        if (load) resetWordStatus();
+    }, [load]);
 
     useEffect(() => {
         getUserWords();

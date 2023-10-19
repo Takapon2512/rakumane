@@ -1,0 +1,123 @@
+.text-color {
+    color: rgb(48, 48, 48);
+}
+
+.font-s {
+    font-size: 14px;
+}
+
+.font-m {
+    font-size: 18px;
+}
+
+.font-l {
+    font-size: 20px;
+}
+
+.font-xl {
+    font-size: 48px;
+}
+
+.memorize {
+    &_firstContents {
+        margin-bottom: 40px;
+    }
+
+    &_testTitle {
+        font-weight: 600;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+        @extend .text-color;
+    }
+
+    &_questionDisplay {
+        position: relative;
+        padding: 24px 32px;
+        margin-bottom: 32px;
+        
+        &Container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    } 
+
+    &_questionWord {
+        letter-spacing: 1px;
+        user-select: none;
+        @extend .text-color;
+    }
+
+    &_questionCount {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        background-color: #d5d5d5;
+        border-top-left-radius: 4px;
+        user-select: none;
+
+        &Text {
+            @extend .text-color;
+        }
+    }
+
+    &_remainTimer {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+    &_answerInput {
+        padding: 24px 32px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+    }
+
+    &_choice {
+        background-color: #fff;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        padding: 16px;
+    }
+
+    &_answerButtons, &_toResult {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+
+        &Icon {
+            font-size: 40px;
+        }
+    }
+
+    &_answerButton, &_passButton, &_toResultButton {
+        display: block;
+        width: 180px;
+        background-color: rgb(240, 119, 49);
+        color: rgb(255, 255, 255);
+
+        &:hover {
+            background-color: rgb(248, 135, 69);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+
+    &_passButton {
+        margin-left: 8px;
+        background-color: rgb(60, 123, 239);
+        
+        &:hover {
+            background-color: rgb(60, 139, 255);
+        }
+
+        &:disabled {
+            background-color: rgb(218, 206, 200);
+        }
+    }
+}
