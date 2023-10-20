@@ -13,15 +13,18 @@ import styles from "./alert.module.scss";
 const AlertComponent = ({ alertFlag }: { alertFlag: string }) => {
 
     useEffect(() => {
-        //アラートボックスのアニメーション
-        const alertAnimation = gsap.timeline();
-
-        alertAnimation.to("#alertBox", 0.5, {
-            opacity: 1
-        }, 0)
-        .to('#alertBox', 1, {
-            opacity: 0
-        }, 4);
+        const alertBox = document.querySelector("#alertBox");
+        if (alertBox) {
+            //アラートボックスのアニメーション
+            const alertAnimation = gsap.timeline();
+    
+            alertAnimation.to("#alertBox", 0.5, {
+                opacity: 1
+            }, 0)
+            .to('#alertBox', 1, {
+                opacity: 0
+            }, 4);
+        }
     }, [alertFlag]);
 
     return (

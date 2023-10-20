@@ -113,13 +113,6 @@ const TestResult = ({ todayWords }: { todayWords: WordDBType[] }) => {
         router.push("/mypage");
     };
 
-    const perfectRecord = async () => {
-        //満点を取ったときのみ暗記ができているとし、現在時刻を記録する
-        const correctWords: Array<WordDBType> = todayWords.filter((word) => Number(word.right_or_wrong) === Number(true));
-        console.log(correctWords);
-        if (correctWords.length === todayWords.length) await apiClient.post("/user/complete", { userData: user });
-    };
-
     return (
         <Box className={styles.memorize_firstContents}>
             <Typography 

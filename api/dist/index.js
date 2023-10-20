@@ -55848,6 +55848,7 @@ const jsonwebtoken_1 = __nccwpck_require__(7486);
 const isAuthenticated = (req, res, next) => {
     var _a;
     const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(" ")[1];
+    console.log(token);
     if (!token)
         return res.status(401).json({ error: "トークンがありません。" });
     (0, jsonwebtoken_1.verify)(token, process.env.SECRET_KEY || "", (err, decoded) => {
@@ -56167,21 +56168,20 @@ exports.userRouter.get("/find_setting", isAuthenticated_1.isAuthenticated, (req,
     });
 });
 //暗記モードで学習した日を記録するAPI
-exports.userRouter.post("/complete", (req, res) => {
-    const user = req.body.userData;
+exports.userRouter.post("/complete", isAuthenticated_1.isAuthenticated, (req, res) => {
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
     server_1.Pool.getConnection((err, con) => {
         if (err)
             return res.status(500).json({ error: "学習日を記録できません。" });
-        const now = new Date(Date.now());
-        const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
         const sql = `INSERT INTO Calendar (learning_date, created_at, user_id) VALUES (?, ?, ?)`;
-        con.query(sql, [formattedDate, formattedDate, user.uid], (err) => {
+        con.query(sql, [formattedDate, formattedDate, req.body.user_id], (err) => {
             if (err)
                 return res.status(500).json({ error: "学習日の記録に失敗しました。" });
+            return res.status(201).json({ message: "学習日を記録しました。" });
         });
         con.release();
     });
-    return res.status(200).json({ message: "学習日を記録しました。" });
 });
 //暗記モードで学習した日を取得するAPI
 exports.userRouter.get("/get_memorize_day", isAuthenticated_1.isAuthenticated, (req, res) => {
@@ -56243,12 +56243,12 @@ exports.userRouter.post("/address_upload", (req, res) => {
             con.query(updateSql, [hashedPassword, user.uid], (err) => {
                 if (err)
                     return res.status(500).json({ error: "パスワードの変更に失敗しました。" });
+                return res.status(200).json({ message: "設定情報を変更しました。" });
             });
             con.release();
         });
     }
     ;
-    return res.status(200).json({ message: "設定情報を変更しました。" });
 });
 //モード設定を編集するAPI
 exports.userRouter.post("/question_upload", (req, res) => {
@@ -56260,10 +56260,10 @@ exports.userRouter.post("/question_upload", (req, res) => {
         con.query(sql, [num_timeLimit, num_questions, user.uid], (err) => {
             if (err)
                 return res.status(500).json({ error: "モード設定の変更に失敗しました。" });
+            return res.status(200).json({ message: "モード設定を変更しました。" });
         });
         con.release();
     });
-    return res.status(200).json({ message: "モード設定を変更しました。" });
 });
 //退会の手続きを行うAPI
 exports.userRouter.post("/unsubscribe", (req, res) => {
@@ -56277,10 +56277,10 @@ exports.userRouter.post("/unsubscribe", (req, res) => {
         con.query(sql, [formattedDate, userData.uid], (err) => {
             if (err)
                 return res.status(500).json({ error: "退会手続きに失敗しました。" });
+            return res.status(200).json({ message: "退会手続きが完了しました。" });
         });
         con.release();
     });
-    return res.status(200).json({ message: "退会手続きが完了しました。" });
 });
 
 
@@ -56572,8 +56572,8 @@ exports.wordRouter.post("/test_send", (req, res) => {
         con.release();
         if (insideErr)
             return res.status(500).json({ error: "テスト結果の記録が失敗しました。" });
+        return res.status(200).json({ message: "テスト結果の記録が完了しました。" });
     });
-    return res.status(200).json({ message: "テスト結果の記録が完了しました。" });
 });
 //テスト結果を取得するAPI
 exports.wordRouter.get("/get_result", isAuthenticated_1.isAuthenticated, (req, res) => {
@@ -56586,6 +56586,7 @@ exports.wordRouter.get("/get_result", isAuthenticated_1.isAuthenticated, (req, r
                 return res.status(500).json({ error: "テスト結果の取得に失敗しました。" });
             return res.status(200).json({ results: result });
         });
+        con.release();
     });
 });
 //complete、free_learning、user_answer、right_or_wrongを元に戻すAPI（free）
@@ -56607,14 +56608,15 @@ exports.wordRouter.post("/free_reset", (req, res) => {
                 if (err) {
                     insideErr = err;
                     console.error(err);
-                    return res.status(500).json({ error: "データのリセットに失敗しました。" });
                 }
                 ;
             });
         });
         con.release();
+        if (insideErr)
+            return res.status(500).json({ error: "データのリセットに失敗しました。" });
+        return res.status(200).json({ message: "データのリセットが完了しました。" });
     });
-    return res.status(200).json({ message: "データのリセットが完了しました。" });
 });
 //complete、user_answer、right_or_wrongを元に戻すAPI（暗記）
 exports.wordRouter.post("/memorize_reset", (req, res) => {
@@ -56634,23 +56636,23 @@ exports.wordRouter.post("/memorize_reset", (req, res) => {
                 if (err) {
                     insideErr = err;
                     console.error(err);
-                    return res.status(500).json({ error: "データのリセットに失敗しました。" });
                 }
                 ;
             });
         });
         con.release();
+        if (insideErr)
+            return res.status(500).json({ error: "データのリセットに失敗しました。" });
+        return res.status(200).json({ message: "データのリセットが完了しました。" });
     });
-    return res.status(200).json({ message: "データのリセットが完了しました。" });
 });
 //テスト中に中断した際のリセット処理をするAPI
-exports.wordRouter.post("/reset", (req, res) => {
-    const user = req.body.userData;
+exports.wordRouter.post("/reset", isAuthenticated_1.isAuthenticated, (req, res) => {
     server_1.Pool.getConnection((err, con) => {
         if (err)
             return res.status(500).json({ error: "処理ができません。" });
         const flagSql = `SELECT * FROM Word WHERE user_id = ? AND complete = true`;
-        con.query(flagSql, [user.uid], (err, words) => {
+        con.query(flagSql, [req.body.user_id], (err, words) => {
             if (err)
                 return res.status(500).json({ error: "単語の抽出ができません。" });
             if (words.length > 0) {
@@ -56660,16 +56662,16 @@ exports.wordRouter.post("/reset", (req, res) => {
                     user_answer = "",
                     right_or_wrong = false WHERE user_id = ?
                 `;
-                con.query(resetSql, [user.uid], (err) => {
+                con.query(resetSql, [req.body.user_id], (err) => {
                     if (err)
                         return res.status(500).json({ error: "リセット処理に失敗しました。" });
+                    return res.status(200).json({ message: "リセット処理が完了しました。" });
                 });
             }
             ;
         });
         con.release();
     });
-    return res.status(200).json({ message: "リセット処理が完了しました。" });
 });
 //単語を編集するAPI
 exports.wordRouter.post("/edit", (req, res) => {

@@ -40,7 +40,7 @@ const Month = ({ calendars }: { calendars: CalendarType[] }) => {
             <Box sx={{ overflow: { xs: "auto" } }}>
                 <Box 
                 className={styles.calendar_container} 
-                sx={{ minWidth: { xs: "720px" } }}
+                sx={{ minWidth: { xs: "700px" } }}
                 >
                     {
                         getMonth(monthNum).map((row: Dayjs[], i: number) => (

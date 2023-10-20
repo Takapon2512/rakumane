@@ -153,6 +153,8 @@ const WordTest = ({ timeConstraint, targetWords }: { timeConstraint: number, tar
                 dbRequest: dbRequest
             });
 
+            perfectRecord();
+
             //結果を正常に登録できたことをアラートで知らせる
             setAlert("成功");
 
@@ -162,6 +164,21 @@ const WordTest = ({ timeConstraint, targetWords }: { timeConstraint: number, tar
         };
 
         router.push("/mypage/memorization/result");
+    };
+
+    const perfectRecord = async () => { 
+        try {
+            //満点を取ったときのみ暗記ができているとし、現在時刻を記録する
+            const correctWords: Array<WordDBType> = todayWords.filter((word) => Number(word.right_or_wrong) === Number(true));
+            const token: string | undefined = document.cookie?.split('=')[1];
+            if (correctWords.length === todayWords.length) await apiClient.post("/user/complete", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (err) {
+            console.error(err);
+        };
     };
 
     const selectAnswer = () => {

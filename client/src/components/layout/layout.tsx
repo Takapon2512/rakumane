@@ -119,7 +119,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             console.error(err);
         };
     };
-    console.log(user);
 
     useEffect(() => {
         setUserData(user);
@@ -147,7 +146,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 >
                     <Box className={styles.layout_imageWrapper}>
                         <Image 
-                        //Imageタグのレスポンシブはscssファイルに記入
+                        priority
                         className={styles.layout_image}
                         src={`/svg/RakuMaNE.svg`}
                         width={200}

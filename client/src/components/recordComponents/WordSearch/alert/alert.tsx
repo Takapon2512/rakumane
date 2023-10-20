@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 
 //MUI
@@ -13,6 +13,7 @@ import styles from "./alert.module.scss";
 const AlertComponent = ({ alertFlag }: { alertFlag: string }) => {
 
     useEffect(() => {
+
         const alertBox = document.querySelector("#alertBox");
         if (alertBox) {
             //アラートボックスのアニメーション
@@ -25,6 +26,7 @@ const AlertComponent = ({ alertFlag }: { alertFlag: string }) => {
                 opacity: 0
             }, 3);
         };
+
     }, [alertFlag]);
 
     return (

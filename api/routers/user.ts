@@ -54,8 +54,7 @@ userRouter.get("/find_setting", isAuthenticated, (req, res) => {
 });
 
 //暗記モードで学習した日を記録するAPI
-userRouter.post("/complete", (req, res) => {
-    const user: ResUserType = req.body.userData;
+userRouter.post("/complete", isAuthenticated, (req, res) => {
 
     const now = new Date(Date.now());
     const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
@@ -64,7 +63,7 @@ userRouter.post("/complete", (req, res) => {
         if (err) return res.status(500).json({ error: "学習日を記録できません。" });
 
         const sql = `INSERT INTO Calendar (learning_date, created_at, user_id) VALUES (?, ?, ?)`;
-        con.query(sql, [formattedDate, formattedDate, user.uid], (err) => {
+        con.query(sql, [formattedDate, formattedDate, req.body.user_id], (err) => {
             if (err) return res.status(500).json({ error: "学習日の記録に失敗しました。" });
             return res.status(201).json({ message: "学習日を記録しました。" });
         });
