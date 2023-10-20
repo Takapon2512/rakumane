@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 
 //CSS
-import styles from './Form.module.scss';
+import styles from './form.module.scss';
 
 //Font
 import { notoSansJP } from "@/utils/font";
