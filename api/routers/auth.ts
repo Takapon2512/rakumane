@@ -114,3 +114,13 @@ authRouter.post("/login", async (req, res) => {
     });
 });
 
+//疎通テスト用のAPI
+authRouter.get("/connection", (req, res) => {
+    try {
+        console.log("通信成功！");
+        return res.status(200).json({ message: "通信に成功しました！" });
+    } catch (err) {
+        console.log("通信失敗");
+        return res.status(500).json({ error: "通信に失敗しました。" });
+    };
+});

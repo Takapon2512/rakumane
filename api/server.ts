@@ -28,7 +28,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/word", wordRouter);
 app.use("/api/v1/schedule", scheduleRouter);
 
-app.get("/", (req, res) => {
+app.get("/mysql", (req, res) => {
     Pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ error: err });
         console.log("MySQLと接続中...");
