@@ -55982,6 +55982,18 @@ exports.authRouter.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         con.release();
     });
 }));
+//疎通テスト用のAPI
+exports.authRouter.get("/connection", (req, res) => {
+    try {
+        console.log("通信成功！");
+        return res.status(200).json({ message: "通信に成功しました！" });
+    }
+    catch (err) {
+        console.log("通信失敗");
+        return res.status(500).json({ error: "通信に失敗しました。" });
+    }
+    ;
+});
 
 
 /***/ }),
@@ -56752,7 +56764,7 @@ app.use("/api/v1/auth", auth_1.authRouter);
 app.use("/api/v1/user", user_1.userRouter);
 app.use("/api/v1/word", word_1.wordRouter);
 app.use("/api/v1/schedule", schedule_1.scheduleRouter);
-app.get("/", (req, res) => {
+app.get("/mysql", (req, res) => {
     exports.Pool.getConnection((err, connection) => {
         if (err)
             return res.status(500).json({ error: err });
