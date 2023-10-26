@@ -17,10 +17,17 @@ export const Pool = createPool({
     user: process.env.MYSQL_USER || "",
     password: process.env.MYSQL_PASSWORD || "",
     database: "rakumane",
-    port: 8889
+    port: 3306
 });
 
-app.use(cors());
+//HTTPとHTTPSの両方を許可するCORS設定
+const corsOptions = {
+    origin: ['http://e-rakumane.com', 'https://e-rakumane.com'],
+    methods: 'GET,POST,OPTIONS', // 許可するHTTPメソッド
+    optionsSuccessStatus: 200 // プリフライトリクエストの成功ステータス
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use("/api/v1/auth", authRouter);

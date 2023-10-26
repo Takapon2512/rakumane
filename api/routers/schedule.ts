@@ -22,6 +22,7 @@ scheduleJob('55 23 * * *', () => {
 
     const idSql = `SELECT uid FROM User WHERE deleted_at IS NULL`;
     con.query(idSql, (err: MysqlError | null, userIdArr: UserIdType[]) => {
+      if (err) throw console.error(err);
       let i = 0;
       
       while (true) {
@@ -94,7 +95,7 @@ scheduleJob('0 0 * * *', () => {
               normalBorder > word.correct_rate
             )).sort((x, y) => x.correct_count - y.correct_count);
   
-            //単語を絞る（優先度A：分類「まあまあ」の単語）
+            //単語を絞る（優先度A：分類「まずまず」の単語）
             const normalWords: Array<WordDBType> = words.filter((word) => (
               normalBorder < word.correct_rate && word.correct_rate < goodBorder
             )).sort((x, y) => x.correct_count - y.correct_count);

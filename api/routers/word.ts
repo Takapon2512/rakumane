@@ -4,7 +4,7 @@ import { MysqlError } from "mysql";
 import { isAuthenticated } from "../middleware/isAuthenticated";
 
 //type
-import { ResUserType, WordDBType } from "../types/globalType";
+import { WordDBType } from "../types/globalType";
 
 export const wordRouter = Router();
 
@@ -247,6 +247,8 @@ wordRouter.get("/free_complete_test", isAuthenticated, (req, res) => {
             if (err) return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
         });
+
+        con.release();
     });
 });
 
@@ -260,6 +262,8 @@ wordRouter.get("/memorize_complete_test", isAuthenticated, (req, res) => {
             if (err) return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
         });
+        
+        con.release();
     });
 });
 
