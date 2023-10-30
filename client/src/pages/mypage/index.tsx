@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -61,6 +62,9 @@ const Mypage = ({ words, todayWords }: Props) => {
 
   return (
       <>
+      <Head>
+        <title>マイページ｜ラクマネイングリッシュ</title>
+      </Head>
       <Layout>
           <Box 
           className={styles.home}

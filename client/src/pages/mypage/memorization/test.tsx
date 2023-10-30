@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -50,6 +51,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Test = ({ timeConstraint, words }: { timeConstraint: number, words: WordDBType[] }) => {
   return (
+    <>
+    <Head>
+      <title>単語テスト｜ラクマネイングリッシュ</title>
+    </Head>
     <Layout>
         <Box 
         className={styles.memorize}>
@@ -58,7 +63,8 @@ const Test = ({ timeConstraint, words }: { timeConstraint: number, words: WordDB
             </Box>
         </Box>
     </Layout>
-  )
+    </>
+  );
 };
 
 export default Test;

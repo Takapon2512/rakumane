@@ -13,7 +13,7 @@ const Login = () => {
     return (
         <>
         <Head>
-            <title>ログイン画面</title>
+            <title>ログイン画面｜ラクマネイングリッシュ</title>
         </Head>
         <Form 
         formTitle="アプリにログインする" 

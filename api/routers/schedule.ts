@@ -75,8 +75,8 @@ scheduleJob('0 0 * * *', () => {
     con.query(idSql, (err: MysqlError | null, userIdArr: UserIdType[]) => {
       if (err) throw console.error(err);
       // if (err) return res.status(500).json({ error: "ユーザー情報の抽出に失敗しました。" });
+      
       let i = 0;
-
       while (true) {
         if (userIdArr.length - 1 < i) break;
 

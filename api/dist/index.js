@@ -56019,6 +56019,8 @@ const goodBorder = 90;
             throw console.error(err);
         const idSql = `SELECT uid FROM User WHERE deleted_at IS NULL`;
         con.query(idSql, (err, userIdArr) => {
+            if (err)
+                throw console.error(err);
             let i = 0;
             while (true) {
                 if (userIdArr.length - 1 < i)
@@ -56084,7 +56086,7 @@ const goodBorder = 90;
                         // if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
                         //単語を絞る（優先度S：分類「苦手」の単語）
                         const weakWords = words.filter((word) => (normalBorder > word.correct_rate)).sort((x, y) => x.correct_count - y.correct_count);
-                        //単語を絞る（優先度A：分類「まあまあ」の単語）
+                        //単語を絞る（優先度A：分類「まずまず」の単語）
                         const normalWords = words.filter((word) => (normalBorder < word.correct_rate && word.correct_rate < goodBorder)).sort((x, y) => x.correct_count - y.correct_count);
                         //単語を絞る（優先度B：分類「得意」の単語）
                         const goodWords = words.filter((word) => (word.correct_rate > goodBorder)).sort((x, y) => x.correct_count - y.correct_count);
@@ -56342,53 +56344,65 @@ exports.wordRouter.get("/get_time", (req, res) => {
     const now = new Date();
     return res.status(200).json({ now: now });
 });
+//単語に重複があるかを調べる関数
+const hasDuplicateEnglish = (userWords, wordsArr) => {
+    const englishSet = new Set(userWords.map(word => word.english));
+    const duplicates = wordsArr.filter(word => englishSet.has(word.english));
+    if (duplicates.length > 0)
+        return true;
+    return false;
+};
 //単語をDBに登録するAPI
 exports.wordRouter.post("/db_register", (req, res) => {
     const registerWords = req.body.dbRegisterWords;
     server_1.Pool.getConnection((err, con) => {
         if (err)
             return res.status(500).json({ error: "単語の登録ができません" });
-        let insideErr = null;
-        registerWords.map((word) => {
-            const sql = `INSERT INTO Word (
-                english,
-                japanese,
-                created_at,
-                complete,
-                today_learning,
-                free_learning,
-                user_answer,
-                right_or_wrong,
-                correct_count,
-                question_count,
-                correct_rate,
-                user_word_id,
-                user_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            con.query(sql, [
-                word.english,
-                word.japanese,
-                word.created_at,
-                word.complete,
-                word.today_learning,
-                word.free_learning,
-                word.user_answer,
-                word.right_or_wrong,
-                word.correct_count,
-                word.question_count,
-                word.correct_rate,
-                word.user_word_id,
-                word.user_id
-            ], (err) => {
-                if (err)
-                    insideErr = err;
-                console.error(err);
+        const sql = `SELECT * FROM Word WHERE user_id = ?`;
+        con.query(sql, [registerWords[0].user_id], (err, result) => {
+            if (err || hasDuplicateEnglish(registerWords, result)) {
+                return res.status(500).json({ error: "登録済みの単語です。" });
+            }
+            ;
+            registerWords.map((word) => {
+                const sql = `INSERT INTO Word (
+                    english,
+                    japanese,
+                    created_at,
+                    complete,
+                    today_learning,
+                    free_learning,
+                    user_answer,
+                    right_or_wrong,
+                    correct_count,
+                    question_count,
+                    correct_rate,
+                    user_word_id,
+                    user_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                con.query(sql, [
+                    word.english,
+                    word.japanese,
+                    word.created_at,
+                    word.complete,
+                    word.today_learning,
+                    word.free_learning,
+                    word.user_answer,
+                    word.right_or_wrong,
+                    word.correct_count,
+                    word.question_count,
+                    word.correct_rate,
+                    word.user_word_id,
+                    word.user_id
+                ], (err) => {
+                    if (err)
+                        throw err;
+                    console.error(err);
+                });
             });
+            con.release();
+            return res.status(201).json({ message: "データ登録に成功しました。" });
         });
-        con.release();
-        if (insideErr)
-            return res.status(500).json({ error: "データの登録ができませんでした。" });
-        return res.status(201).json({ message: "データ登録に成功しました。" });
     });
 });
 //学習予定の単語を取得するAPI
@@ -56529,6 +56543,7 @@ exports.wordRouter.get("/free_complete_test", isAuthenticated_1.isAuthenticated,
                 return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
         });
+        con.release();
     });
 });
 //テスト単語を取得するAPI（暗記）
@@ -56542,6 +56557,7 @@ exports.wordRouter.get("/memorize_complete_test", isAuthenticated_1.isAuthentica
                 return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
         });
+        con.release();
     });
 });
 //テストの結果を送信するAPI

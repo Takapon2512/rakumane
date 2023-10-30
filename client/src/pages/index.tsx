@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 
 //Component
 import Header from "@/components/topComponents/header";
@@ -13,6 +14,9 @@ import Footer from "@/components/topComponents/footer";
 const Top = () => {
   return (
     <>
+    <Head>
+      <title>ラクマネイングリッシュ</title>
+    </Head>
     <Header />
     <FirstContent />
     <SecondContent />

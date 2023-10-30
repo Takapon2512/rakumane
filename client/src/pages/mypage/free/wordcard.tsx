@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -43,6 +44,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const WordCardPage = ({ freeWords }: { freeWords: WordDBType[] }) => {
   return (
+    <>
+    <Head>
+      <title>暗記カード｜ラクマネイングリッシュ</title>  
+    </Head>    
     <Layout>
       <Box className={styles.free}>
         <Box sx={{ maxWidth: "900px", margin: "auto" }}>
@@ -50,6 +55,7 @@ const WordCardPage = ({ freeWords }: { freeWords: WordDBType[] }) => {
         </Box>
       </Box>
     </Layout>
+    </>
   )
 }
 

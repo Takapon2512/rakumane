@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -55,6 +56,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Record = ({ words, calendars }: Props) => {
 
   return (
+    <>
+    <Head>
+      <title>取り組みの記録｜ラクマネイングリッシュ</title>
+    </Head>
     <Layout>
       <Box className={styles.record}>
         <Box className={styles.record_container}>
@@ -63,7 +68,8 @@ const Record = ({ words, calendars }: Props) => {
         </Box>
       </Box>
     </Layout>
-  )
+    </>
+  );
 };
 
 export default Record;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -46,6 +47,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Free = ({ words }: Props) => {
 
   return (
+    <>    
+    <Head>
+      <title>フリーモード｜ラクマネイングリッシュ</title>
+    </Head>
     <Layout>
       <Box className={styles.free}>
         <Box className={styles.free_container}>
@@ -53,6 +58,7 @@ const Free = ({ words }: Props) => {
         </Box>
       </Box>
     </Layout>
+    </>
   );
 };
 

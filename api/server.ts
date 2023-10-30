@@ -20,14 +20,13 @@ export const Pool = createPool({
     port: 3306
 });
 
-//HTTPとHTTPSの両方を許可するCORS設定
-const corsOptions = {
-    origin: ['http://e-rakumane.com', 'https://e-rakumane.com'],
-    methods: 'GET,POST,OPTIONS', // 許可するHTTPメソッド
-    optionsSuccessStatus: 200 // プリフライトリクエストの成功ステータス
-};
+const ALLOWED_ORIGINS = ['https://e-rakumane.com','http://e-rakumane.com'];
 
-app.use(cors(corsOptions));
+app.use(cors({ 
+    origin: ALLOWED_ORIGINS, 
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+    optionsSuccessStatus: 204
+}));
 app.use(express.json());
 
 app.use("/api/v1/auth", authRouter);

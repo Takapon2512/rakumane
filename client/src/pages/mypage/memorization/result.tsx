@@ -1,4 +1,5 @@
 import React from 'react';
+import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 
 //lib
@@ -44,6 +45,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const result = ({ words }: Props) => {
     return (
+        <>
+        <Head>
+            <title>テスト結果｜ラクマネイングリッシュ</title>
+        </Head>
         <Layout>
             <Box className={styles.memorize}>
                 <Box className={styles.memorize_container}>
@@ -51,6 +56,7 @@ const result = ({ words }: Props) => {
                 </Box>
             </Box>
         </Layout>
+        </>
     );
 };
 

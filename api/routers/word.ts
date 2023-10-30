@@ -46,55 +46,68 @@ wordRouter.get("/get_time", (req, res) => {
     return res.status(200).json({ now: now });
 });
 
+//単語に重複があるかを調べる関数
+const hasDuplicateEnglish = (userWords: Array<WordDBType>, wordsArr: Array<WordDBType>) => {
+    const englishSet = new Set<string>(userWords.map(word => word.english));
+    const duplicates: Array<WordDBType> = wordsArr.filter(word => englishSet.has(word.english));
+
+    if (duplicates.length > 0) return true;
+    return false;
+};
+
 //単語をDBに登録するAPI
 wordRouter.post("/db_register", (req, res) => {
     const registerWords: WordDBType[] = req.body.dbRegisterWords;
 
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "単語の登録ができません" });
-        let insideErr: MysqlError | null = null; 
 
-        registerWords.map((word) => {
-            const sql = `INSERT INTO Word (
-                english,
-                japanese,
-                created_at,
-                complete,
-                today_learning,
-                free_learning,
-                user_answer,
-                right_or_wrong,
-                correct_count,
-                question_count,
-                correct_rate,
-                user_word_id,
-                user_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    
-            con.query(sql, [
-                word.english,
-                word.japanese,
-                word.created_at,
-                word.complete,
-                word.today_learning,
-                word.free_learning,
-                word.user_answer,
-                word.right_or_wrong,
-                word.correct_count,
-                word.question_count,
-                word.correct_rate,
-                word.user_word_id,
-                word.user_id
-            ], (err) => {
-                if (err) insideErr = err;
-                console.error(err);
-            });
-        });
+        const sql = `SELECT * FROM Word WHERE user_id = ?`;
+        con.query(sql, [registerWords[0].user_id], (err: MysqlError | null, result: WordDBType[]) => {
+            if (err || hasDuplicateEnglish(registerWords, result)) {
+                return res.status(500).json({ error: "登録済みの単語です。" });
+            };
+
+            registerWords.map((word) => {
+                const sql = `INSERT INTO Word (
+                    english,
+                    japanese,
+                    created_at,
+                    complete,
+                    today_learning,
+                    free_learning,
+                    user_answer,
+                    right_or_wrong,
+                    correct_count,
+                    question_count,
+                    correct_rate,
+                    user_word_id,
+                    user_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         
-        con.release();
-
-        if (insideErr) return res.status(500).json({ error: "データの登録ができませんでした。" });
-        return res.status(201).json({ message: "データ登録に成功しました。" });
+                con.query(sql, [
+                    word.english,
+                    word.japanese,
+                    word.created_at,
+                    word.complete,
+                    word.today_learning,
+                    word.free_learning,
+                    word.user_answer,
+                    word.right_or_wrong,
+                    word.correct_count,
+                    word.question_count,
+                    word.correct_rate,
+                    word.user_word_id,
+                    word.user_id
+                ], (err) => {
+                    if (err) throw err;
+                    console.error(err);
+                });
+            });
+            
+            con.release();
+            return res.status(201).json({ message: "データ登録に成功しました。" });
+        });
     });
 });
 
@@ -415,6 +428,8 @@ wordRouter.post("/reset", isAuthenticated, (req, res) => {
                     return res.status(200).json({ message: "リセット処理が完了しました。" });
                 });
             };
+
+            return res.status(200).json({ message: "リセット処理の必要性なし" });
         });
 
         con.release();
