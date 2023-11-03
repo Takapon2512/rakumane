@@ -88,15 +88,16 @@ userRouter.get("/get_memorize_day", isAuthenticated, (req, res) => {
 
 //設定情報を編集するAPI
 userRouter.post("/address_upload", (req, res) => {
-    const { name, email, currentPassword, newPassword, confirmPassword, user }: SendDataType = req.body;
+    const { name, email, currentPassword, newPassword, confirmPassword, user}: SendDataType = req.body;
 
     if (name !== "") {
         Pool.getConnection((err, con) => {
             if (err) return res.status(500).json({ error: "ユーザー名を変更できません。" });
 
-            const sql = `UPDATE Setting SET username = ? WHERE user_id = ?`;
+            const sql = `UPDATE User SET username = ? WHERE uid = ?`;
             con.query(sql, [name, user.uid], (err) => {
                 if (err) return res.status(500).json({ error: "ユーザー名の変更に失敗しました。" });
+                return res.status(200).json({ message: "ユーザー名の変更に成功しました。" });
             });
 
             con.release();
@@ -107,9 +108,10 @@ userRouter.post("/address_upload", (req, res) => {
         Pool.getConnection((err, con) => {
             if (err) return res.status(500).json({ error: "メールアドレスを変更できません。" });
 
-            const sql = `UPDATE Setting email = ? WHERE user_id = ?`;
+            const sql = `UPDATE User email = ? WHERE uid= ?`;
             con.query(sql, [email, user.uid], (err) => {
                 if (err) return res.status(500).json({ error: "メールアドレスの変更に失敗しました。" })
+                return res.status(200).json({ message: "メールアドレスの変更に成功しました。" });
             });
 
             con.release();
@@ -119,8 +121,11 @@ userRouter.post("/address_upload", (req, res) => {
     if (currentPassword !== "" && newPassword !== "" && confirmPassword !== "") {
         Pool.getConnection((err, con) => {
             if (err) return res.status(500).json({ error: "パスワードを変更できません。" });
+            
+            //パスワードが基準を満たすかどうかを調べる
+            if (!isAvailablePassword(newPassword)) return res.status(500).json({ error: "パスワードが基準以下です。" });
 
-            const passwordSql = `SELECT password FROM User WHERE user_id = ?`;
+            const passwordSql = `SELECT password FROM User WHERE uid = ?`;
             con.query(passwordSql, [user.uid], (err, result: string[]) => {
                 if (err) return res.status(500).json({ error: "現在のパスワード情報の抽出に失敗しました。" });
 
@@ -128,11 +133,11 @@ userRouter.post("/address_upload", (req, res) => {
                 if (!isPassword) return res.status(500).json({ error: "パスワードが違います。" });
             });
 
-            const updateSql = `UPDATE Setting SET password = ? WHERE user_id = ?`;
+            const updateSql = `UPDATE User SET password = ? WHERE uid = ?`;
             const hashedPassword = hashSync(newPassword, genSaltSync(10));
             con.query(updateSql, [hashedPassword, user.uid], (err) => {
                 if (err) return res.status(500).json({ error: "パスワードの変更に失敗しました。" });
-                return res.status(200).json({ message: "設定情報を変更しました。" });
+                return res.status(200).json({ message: "パスワードを変更しました。" });
             });
 
             con.release();
@@ -181,3 +186,13 @@ userRouter.post("/unsubscribe", (req, res) => {
         con.release();
     });
 });
+
+//基準に合致するパスワードかを調べる関数
+const isAvailablePassword = (password: string) => {
+    if (password.length < 7) return false;
+
+    const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@?&%$#]).+$/;
+    if (!regex.test(password)) return false;
+
+    return true;
+};

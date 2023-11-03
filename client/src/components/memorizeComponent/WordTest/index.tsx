@@ -229,19 +229,19 @@ const WordTest = ({ timeConstraint, targetWords }: { timeConstraint: number, tar
         setAlert("");
     }, []);
 
-    // useEffect(() => {
-    //     //次の問題に遷移し、解答状況を反映する
-    //     if (remainTime < 0 && problemNum <= todayWords.length) handlePass();
+    useEffect(() => {
+        //次の問題に遷移し、解答状況を反映する
+        if (remainTime < 0 && problemNum <= todayWords.length) handlePass();
 
-    //     if (problemNum < todayWords.length + 1) {
-    //       const timer = setInterval(() => {
-    //         setRemainTime(prev => prev >= -1 ? prev - 1 : settingTime);
-    //       }, 1000);
-    //       return () => {
-    //         clearInterval(timer);
-    //       };
-    //     };
-    // }, [remainTime]);
+        if (problemNum < todayWords.length + 1) {
+          const timer = setInterval(() => {
+            setRemainTime(prev => prev >= -1 ? prev - 1 : settingTime);
+          }, 1000);
+          return () => {
+            clearInterval(timer);
+          };
+        };
+    }, [remainTime]);
 
     return (
         <>
