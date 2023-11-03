@@ -133,7 +133,10 @@ const ForthContent = () => {
                 <Typography
                 variant="h6"
                 className={styles.fifC_title}
-                sx={{ fontSize: { xs: "32px", md: "48px" } }}
+                sx={{ 
+                        fontSize: { xs: "32px", md: "48px" },
+                        marginBottom: { xs: "36px", md: "64px" } 
+                    }}
                 >
                     他にもこんな
                     <Box 
@@ -160,8 +163,7 @@ const ForthContent = () => {
                             elevation={2}
                             key={index}
                             sx={{
-                                width: { xs: "96%", md: "calc(42% - 24px)" },
-                                marginRight: { xs: 0, md: "24px" },
+                                width: { md: "calc(42% - 24px)" },
                                 marginBottom: "24px"
                             }}
                             >

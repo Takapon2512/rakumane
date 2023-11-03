@@ -139,14 +139,14 @@ const WordCard = ({ freeWords }: { freeWords: WordDBType[] }) => {
         <Box 
         className={styles.free_memoryCardContainer}
         sx={{
-          height: { xs: "200px", md: "400px" }
+          height: 200
         }}
         >
           <Typography 
           className={`${styles.free_memoryWord} ${notoSansJP.className}`} 
           variant='h2'
           sx={{ 
-            fontSize: { xs: "48px", md: "78px" },
+            fontSize: { xs: "68px", md: "78px" },
             paddingBottom: { xs: "16px", md: "36px" }
           }}
           >

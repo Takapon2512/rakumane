@@ -135,7 +135,7 @@ const SearchWords = ({ dbWords }: { dbWords: WordDBType[] }) => {
     };
 
     //一度に表示する単語を10個に制限する
-    const sliceArr: Array<WordDBType> = keyWordsArr.filter((word: WordDBType, index: number) => (
+    const sliceArr: Array<WordDBType> = keyWordsArr.filter((_, index: number) => (
         index >= perPageItemNum * (currentPage - 1) 
         && perPageItemNum * currentPage > index 
     ));

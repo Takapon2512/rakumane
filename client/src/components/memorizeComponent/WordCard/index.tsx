@@ -139,15 +139,13 @@ const WordCard = ({ todayWords }: { todayWords: WordDBType[] }) => {
             >
                 <Box 
                 className={styles.memorize_memoryCardContainer}
-                sx={{
-                    height: { xs: "200px", md: "400px" }
-                }}
+                sx={{ height: 200 }}
                 >
                     <Typography 
                     variant='h2'
                     className={`${notoSansJP.className} ${styles.memorize_memoryWord}`}
                     sx={{ 
-                        fontSize: { xs: "48px", md: "78px" },
+                        fontSize: { xs: "68px", md: "78px" },
                         paddingBottom: { xs: "16px", md: "36px" }
                     }}
                     >

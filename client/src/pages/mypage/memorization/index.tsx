@@ -51,7 +51,7 @@ const Memorize = ({ words }: Props) => {
     </Head>
     <Layout>
       <Box className={styles.memorize}>
-        <Box className={styles.memorizeContainer}>
+        <Box className={styles.memorize_container}>
           <WordCard todayWords={words} />
         </Box>
       </Box>

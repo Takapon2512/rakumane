@@ -203,19 +203,19 @@ const WordTest = ({ timeConstraint, freeWords }: { timeConstraint: number, freeW
     setRemainTime(settingTime);
   };
 
-  useEffect(() => {
-    //次の問題に遷移する
-    if (remainTime < 0 && problemNum <= questionWords.length) handlePass();
+  // useEffect(() => {
+  //   //次の問題に遷移する
+  //   if (remainTime < 0 && problemNum <= questionWords.length) handlePass();
 
-    if (problemNum < questionWords.length + 1) {
-      const timer = setInterval(() => {
-        setRemainTime(prev => prev > -1 ? prev - 1 : settingTime);
-      }, 1000);
-      return () => {
-        clearInterval(timer);
-      };
-    };
-  }, [remainTime]);
+  //   if (problemNum < questionWords.length + 1) {
+  //     const timer = setInterval(() => {
+  //       setRemainTime(prev => prev > -1 ? prev - 1 : settingTime);
+  //     }, 1000);
+  //     return () => {
+  //       clearInterval(timer);
+  //     };
+  //   };
+  // }, [remainTime]);
 
   return (
     <>

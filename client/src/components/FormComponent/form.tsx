@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 import { 
     useForm, 
     SubmitHandler 
-} from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
+} from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 //MUI
 import {
@@ -49,7 +49,7 @@ const schema = yup.object({
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&].*$/,
         '英数字と記号を利用してください'
     )
-})
+});
 
 const Form = ({formTitle, buttonTitle, changeTitle}: {formTitle: string, buttonTitle: string, changeTitle: string}) => {
     //useRouter
@@ -79,7 +79,6 @@ const Form = ({formTitle, buttonTitle, changeTitle}: {formTitle: string, buttonT
 
     //ボタンを押したときの処理
     const onSubmit: SubmitHandler<LoginType> = async (data) => {
-        console.log(data);
         if (router.pathname === "/register") {
             registerAndLogin("/auth/register");
         } else if (router.pathname === "/login") {
@@ -182,7 +181,7 @@ const Form = ({formTitle, buttonTitle, changeTitle}: {formTitle: string, buttonT
                     >
                         {changeTitle}
                     </Button>
-                    {
+                    {/* {
                         router.pathname === "/login" ? (
                             <Button
                             className={`${notoSansJP.className} ${styles.form_forgot}`}
@@ -192,7 +191,7 @@ const Form = ({formTitle, buttonTitle, changeTitle}: {formTitle: string, buttonT
                             </Button>
 
                         ) : (<></>) 
-                    }
+                    } */}
                 </Stack>
             </Box>
         </Box>

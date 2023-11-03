@@ -34,7 +34,6 @@
     &_title {
         text-align: center;
         font-weight: 600;
-        margin-bottom: 64px;
         letter-spacing: 1px;
     }
 
@@ -45,7 +44,10 @@
         border-radius: 8px;
         z-index: 15;
         overflow: hidden;
-        width: calc(100% - 48px)
+
+        @media screen and (min-width: 960px) {
+            margin-right: 24px;
+        }
     }
 
     &_icon {
