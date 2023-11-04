@@ -4,10 +4,7 @@ import { MysqlError } from "mysql";
 import { scheduleJob } from "node-schedule";
 
 //type
-import { WordDBType, SettingType } from "../types/globalType";
-type UserIdType = {
-  uid: string
-};
+import { WordDBType, SettingType, UserType } from "../types/globalType";
 
 export const scheduleRouter = Router();
 
@@ -21,16 +18,16 @@ scheduleJob('55 23 * * *', () => {
     if (err) throw console.error(err);
 
     const idSql = `SELECT uid FROM User WHERE deleted_at IS NULL`;
-    con.query(idSql, (err: MysqlError | null, userIdArr: UserIdType[]) => {
-      if (err) throw console.error(err);
+    con.query(idSql, (err: MysqlError | null, users: UserType[]) => {
+      if (err) return console.error(err);
       let i = 0;
       
       while (true) {
-        if (userIdArr.length - 1 < i) break;
+        if (users.length - 1 < i) break;
 
         const wordSql = `SELECT * FROM Word WHERE user_id = ? AND today_learning = true`;
-        con.query(wordSql, [userIdArr[i].uid], (err: MysqlError | null, words: WordDBType[]) => {
-          if (err) throw console.error(err);
+        con.query(wordSql, [users[i].uid], (err: MysqlError | null, words: WordDBType[]) => {
+          if (err) return console.error(err);
 
           words.map((word) => {
             const wordUpdateSql = `UPDATE Word SET 
@@ -49,15 +46,15 @@ scheduleJob('55 23 * * *', () => {
             ];
 
             con.query(wordUpdateSql, values, (err) => {
-              if (err) throw console.error(err);
+              if (err) return console.error(err);
+              return console.log("単語の登録解除完了");
             });
           });
         });
         i++;
       };
-
-      console.log("ループを抜ける");
       i = 0;
+
       console.log("処理完了");
     });
 
@@ -65,65 +62,39 @@ scheduleJob('55 23 * * *', () => {
   });
 });
 
-//毎日00:00に学習する単語を決定し「today_learning」をtrueにする。
+//毎日0時に学習する単語を決定する
 scheduleJob('0 0 * * *', () => {
   Pool.getConnection((err, con) => {
-    if (err) throw console.error(err);
-    // if (err) return res.status(500).json({ error: "本日の単語を指定できません。" })
+    if (err) return console.error(err);
 
-    const idSql = `SELECT uid FROM User WHERE deleted_at IS NULL`;
-    con.query(idSql, (err: MysqlError | null, userIdArr: UserIdType[]) => {
-      if (err) throw console.error(err);
-      // if (err) return res.status(500).json({ error: "ユーザー情報の抽出に失敗しました。" });
-      
+    const userSql = `SELECT * FROM User WHERE deleted_at IS NULL`;
+    con.query(userSql, (err: MysqlError | null, users: UserType[]) => {
+      if (err) return console.error(err);
+
       let i = 0;
       while (true) {
-        if (userIdArr.length - 1 < i) break;
-
+        if (users.length - 1 < i) break;
         const settingSql = `SELECT * FROM Setting WHERE user_id = ?`;
-        con.query(settingSql, [userIdArr[i].uid], (err: MysqlError | null, settingDataArr: SettingType[]) => {
-          if (err) throw console.error(err);
-          // if (err) return res.status(500).json({ error: "設定情報の抽出に失敗しました。" });
-
+        con.query(settingSql, [users[i].uid], (err: MysqlError | null, settings: SettingType[]) => {
+          if (err) return console.error(err);
+          
           const wordsSql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
-          con.query(wordsSql, [userIdArr[i].uid], (err: MysqlError | null, words: WordDBType[]) => {
-            if (err) throw console.error(err);
-            // if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
-  
-            //単語を絞る（優先度S：分類「苦手」の単語）
-            const weakWords: Array<WordDBType> = words.filter((word) => (
-              normalBorder > word.correct_rate
-            )).sort((x, y) => x.correct_count - y.correct_count);
-  
-            //単語を絞る（優先度A：分類「まずまず」の単語）
-            const normalWords: Array<WordDBType> = words.filter((word) => (
-              normalBorder < word.correct_rate && word.correct_rate < goodBorder
-            )).sort((x, y) => x.correct_count - y.correct_count);
-  
-            //単語を絞る（優先度B：分類「得意」の単語）
-            const goodWords: Array<WordDBType> = words.filter((word) => (
-              word.correct_rate > goodBorder
-            )).sort((x, y) => x.correct_count - y.correct_count);
+          con.query(wordsSql, [users[i].uid], (err: MysqlError | null, targetWords: WordDBType[]) => {
+            if (err) return console.error(err);
 
-            //絞った単語を格納し、制限数より後の単語をカット
-            const filterWords: Array<WordDBType> = [
-              ...weakWords,
-              ...normalWords,
-              ...goodWords
-            ].slice(0, settingDataArr[0].work_on_count);
-
-            //格納した単語の「today_learning」をtrueにする
             const targetSql = `UPDATE Word SET today_learning = true WHERE user_id = ? AND user_word_id = ?`;
-            filterWords.map((word) => {
+            selectWords(targetWords, settings[0].work_on_count).map((word: WordDBType) => {
               con.query(targetSql, [word.user_id, word.user_word_id], (err) => {
-                if (err) throw console.error(err);
-                // if (err) return res.status(500).json({ error: "単語情報の変更に失敗しました。" });
+                if (err) return console.error(err);
+                return console.log("単語の登録ができました。");
               });
             });
           });
         });
+
         i++;
       };
+
       console.log("ループを抜ける");
       i = 0;
       console.log("処理完了");
@@ -132,6 +103,34 @@ scheduleJob('0 0 * * *', () => {
     con.release();
   });
 });
+
+//単語の取捨選択
+const selectWords = (targetWords: WordDBType[], work_on_count: number) => {
+
+  //単語を絞る（優先度S：分類「苦手」の単語）
+  const weakWords: Array<WordDBType> = targetWords.filter((word) => (
+    normalBorder > word.correct_rate
+  )).sort((x, y) => x.correct_count - y.correct_count);
+
+  //単語を絞る（優先度A：分類「まずまず」の単語）
+  const normalWords: Array<WordDBType> = targetWords.filter((word) => (
+    normalBorder < word.correct_rate && word.correct_rate < goodBorder
+  )).sort((x, y) => x.correct_count - y.correct_count);
+
+  //単語を絞る（優先度B：分類「得意」の単語）
+  const goodWords: Array<WordDBType> = targetWords.filter((word) => (
+    word.correct_rate > goodBorder
+  )).sort((x, y) => x.correct_count - y.correct_count);
+
+  //絞った単語を格納し、制限数より後の単語をカット
+  const filterWords: Array<WordDBType> = [
+    ...weakWords,
+    ...normalWords,
+    ...goodWords
+  ].slice(0, work_on_count);
+
+  return filterWords.sort((x, y) => x.user_word_id - y.user_word_id);
+};
 
 const slackingJudge = (word: WordDBType) => {
   //現時刻を取得
