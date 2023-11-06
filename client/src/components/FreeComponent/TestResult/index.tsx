@@ -177,7 +177,7 @@ const TestResult = ({ dbWords }: { dbWords: WordDBType[] }) => {
                                             align='center'
                                             sx={{ fontSize: { xs: "14px", md: "16px" } }}
                                             >
-                                                {word.id}
+                                                {word.user_word_id}
                                             </StyledTableCell>
                                             <StyledTableCell
                                             className={notoSansJP.className}

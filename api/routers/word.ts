@@ -190,7 +190,7 @@ wordRouter.get("/free_search", isAuthenticated, (req, res) => {
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "単語を取得できません。" });
 
-        const sql = `SELECT * FROM Word WHERE user_id = ? AND free_learning = true`;
+        const sql = `SELECT * FROM Word WHERE user_id = ? AND free_learning = true AND deleted_at IS NULL`;
         con.query(sql, [req.body.user_id], (err, result: WordDBType[]) => {
             if (err) return res.status(500).json({ error: "単語の取得に失敗しました。" });
             return res.status(200).json({ words: result });
@@ -473,7 +473,12 @@ wordRouter.post("/delete", (req, res) => {
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "単語を削除できません。" });
         
-        const sql = `UPDATE Word SET deleted_at = ? WHERE user_id = ? AND user_word_id = ?`;
+        const sql = `UPDATE Word SET 
+        deleted_at = ?, 
+        free_learning = false, 
+        complete = false 
+        WHERE user_id = ? AND user_word_id = ?
+        `;
         con.query(sql, [formattedDate, targetWord.user_id, targetWord.user_word_id], (err) => {
             if (err) return res.status(500).json({ error: "単語の削除に失敗しました。" });
             return res.status(200).json({ message: "単語を削除しました。" });

@@ -39,7 +39,7 @@ const AlertComponent = ({ alertFlag }: { alertFlag: string }) => {
                     {
                         alertFlag === "失敗" ? (
                             <Alert variant='filled' severity='error' id='alert' className={styles.alert_error}>
-                                登録されている単語が少ないため、チャレンジできません
+                                現在はチャレンジできません
                             </Alert>
                         ) : (<></>)
                     }

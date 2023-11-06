@@ -24,23 +24,25 @@ authRouter.post("/register", async (req, res) => {
             if (isUser) return res.status(500).json({ error: "すでにユーザーが存在します。" });
             if (err) return res.status(500).json({ error: "DBに問題が発生しました。" });
 
-            con.release();
         });
+
+        con.release();
     });
 
     //DBに退会したユーザーが存在しないかを確認
     Pool.getConnection((err, con) => {
-        const sql = `SELECT email FROM User WHERE deleted_at IS NOT NULL`;
+        const isUserSql = `SELECT email FROM User WHERE deleted_at IS NOT NULL`;
         if (err) return res.status(500).json({ error: "DBとの接続に問題が発生しました。" });
 
-        con.query(sql, (err: MysqlError | null, result: UserType[] | null) => {
+        con.query(isUserSql, (err: MysqlError | null, result: UserType[] | null) => {
             if (err) return res.status(500).json({ error: "ユーザーデータの抽出に失敗しました。" });
 
             if (result && result.length > 0) {
                 const delete_sql = `DELETE FROM User WHERE email = ?`;
-                con.query(delete_sql, [email], (err: MysqlError | null, result) => {
+                con.query(delete_sql, [email], (err) => {
                     if (err) return res.status(500).json({ error: "ユーザーデータの消去に失敗しました。" });
-                    console.log("ユーザーの消去が完了しました。");
+                    return console.log("ユーザーの消去が完了しました。");
+                    
                 });
             };
 
@@ -55,16 +57,17 @@ authRouter.post("/register", async (req, res) => {
     const randomUUID: string = uuidv4();
 
     //登録した日付を記録
-    const now = new Date();
+    const now = new Date(Date.now());
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
 
     //ユーザーデータをDBに登録する
     Pool.getConnection((err, con) => {
         if (err) return res.status(500).json({ error: "DBとの接続に問題が発生しました。" });
         const sql = `INSERT INTO User (email, username, password, created_at, uid) VALUES (?, ?, ?, ?, ?)`;
 
-        con.query(sql, [email, name, hashedPassword, now, randomUUID], (err: MysqlError | null) => {
+        con.query(sql, [email, name, hashedPassword, formattedDate, randomUUID], (err: MysqlError | null) => {
             if (err) return res.status(500).json({ error: "データベースへの挿入に失敗しました。" });
-            console.log("データが挿入されました。");
+            return console.log("データが挿入されました。");
         });
 
         con.release();

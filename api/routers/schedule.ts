@@ -12,92 +12,83 @@ export const scheduleRouter = Router();
 const normalBorder = 60;
 const goodBorder = 90;
 
-//毎日23:55に学習対象の単語の「today_learning」をfalseにする。（2023/10/18動作確認済み）
+//毎日23:55に学習対象の単語の「today_learning」をfalseにする（2023/11/6 動作に不備あり。修正済み）
 scheduleJob('55 23 * * *', () => {
   Pool.getConnection((err, con) => {
-    if (err) throw console.error(err);
+    if (err) return console.error(err);
 
-    const idSql = `SELECT uid FROM User WHERE deleted_at IS NULL`;
-    con.query(idSql, (err: MysqlError | null, users: UserType[]) => {
+    const userSql = `SELECT * FROM User WHERE deleted_at IS NULL`;
+    con.query(userSql, (err: MysqlError | null, users: UserType[]) => {
+
       if (err) return console.error(err);
-      let i = 0;
-      
-      while (true) {
-        if (users.length - 1 < i) break;
 
-        const wordSql = `SELECT * FROM Word WHERE user_id = ? AND today_learning = true`;
+      const wordSql = `SELECT * FROM Word WHERE user_id = ? AND today_learning = true AND deleted_at IS NULL`;
+      for (let i = 0; i < users.length; i++) {
         con.query(wordSql, [users[i].uid], (err: MysqlError | null, words: WordDBType[]) => {
           if (err) return console.error(err);
 
-          words.map((word) => {
-            const wordUpdateSql = `UPDATE Word SET 
-              correct_count = ?, 
-              correct_rate = ?, 
-              question_count = ?, 
-              today_learning = false 
-              WHERE user_word_id = ?
-            `;
+          const wordUpdateSql = `UPDATE Word SET
+            correct_count = ?,
+            correct_rate = ?,
+            question_count = ?,
+            today_learning = false 
+            WHERE user_word_id = ? AND user_id = ?
+          `;
 
+          words.map(word => {
             const values = [
               slackingJudge(word) ? 0 : word.correct_count,
               slackingJudge(word) ? 0 : word.correct_rate,
               slackingJudge(word) ? 0 : word.question_count,
-              word.user_word_id
+              word.user_word_id,
+              word.user_id
             ];
 
             con.query(wordUpdateSql, values, (err) => {
               if (err) return console.error(err);
-              return console.log("単語の登録解除完了");
+              return console.log(`単語番号${word.user_word_id}: 登録解除が完了しました。`);
             });
           });
         });
-        i++;
       };
-      i = 0;
-
-      console.log("処理完了");
     });
 
     con.release();
   });
 });
 
-//毎日0時に学習する単語を決定する
+//毎日0時に学習する単語を決定する（2023/11/6 動作に不備あり。修正済み）
 scheduleJob('0 0 * * *', () => {
+
   Pool.getConnection((err, con) => {
     if (err) return console.error(err);
 
     const userSql = `SELECT * FROM User WHERE deleted_at IS NULL`;
     con.query(userSql, (err: MysqlError | null, users: UserType[]) => {
-      if (err) return console.error(err);
 
-      let i = 0;
-      while (true) {
-        if (users.length - 1 < i) break;
-        const settingSql = `SELECT * FROM Setting WHERE user_id = ?`;
+      if (err) return console.error(err);
+      
+      //設定情報を取得
+      const settingSql = `SELECT * FROM Setting WHERE user_id = ?`;
+      for (let i = 0; i < users.length; i++) {
         con.query(settingSql, [users[i].uid], (err: MysqlError | null, settings: SettingType[]) => {
           if (err) return console.error(err);
           
-          const wordsSql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
-          con.query(wordsSql, [users[i].uid], (err: MysqlError | null, targetWords: WordDBType[]) => {
+          const wordSql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
+          con.query(wordSql, [users[i].uid], (err: MysqlError | null, words: WordDBType[]) => {
             if (err) return console.error(err);
 
-            const targetSql = `UPDATE Word SET today_learning = true WHERE user_id = ? AND user_word_id = ?`;
-            selectWords(targetWords, settings[0].work_on_count).map((word: WordDBType) => {
-              con.query(targetSql, [word.user_id, word.user_word_id], (err) => {
+            const registerSql = `UPDATE Word SET today_learning = true WHERE user_id = ? AND user_word_id = ?`;
+            selectWords(words, settings[0].work_on_count).map(word => {
+              con.query(registerSql, [word.user_id, word.user_word_id], (err) => {
                 if (err) return console.error(err);
-                return console.log("単語の登録ができました。");
+                return console.log(`単語番号${word.user_word_id}: 単語登録が完了しました。`);
               });
             });
           });
         });
-
-        i++;
       };
 
-      console.log("ループを抜ける");
-      i = 0;
-      console.log("処理完了");
     });
 
     con.release();

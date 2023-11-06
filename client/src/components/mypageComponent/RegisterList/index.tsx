@@ -207,8 +207,8 @@ const RegisterList = ({ dbWords }: { dbWords: WordDBType[] }) => {
     
             try {
                 await apiClient.post("/word/db_register", { dbRegisterWords: dbRegisterWords});
-    
-                setRegisterWords([]);
+
+                location.reload();
                 setAlertFlag("成功");
 
             } catch (err) {
