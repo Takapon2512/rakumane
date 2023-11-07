@@ -20,7 +20,7 @@ export const Pool = createPool({
     port: 3306
 });
 
-const ALLOWED_ORIGINS = ['http://localhost:3000'];
+const ALLOWED_ORIGINS = ['http://localhost:3000', 'http://e-rakumane.com', 'https://e-rakumane.com'];
 
 app.use(cors({
     origin: ALLOWED_ORIGINS, 

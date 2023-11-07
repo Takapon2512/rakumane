@@ -68,6 +68,7 @@ const WordEditing = ({ wordData }: { wordData: WordDBType | null }) => {
         try {
             await apiClient.post("/word/delete", { deleteWord: word });
             setAlert("成功");
+            location.reload();
         } catch (err) {
             console.error(err);
             setAlert("失敗");

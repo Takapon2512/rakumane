@@ -44,12 +44,11 @@ http://e-rakumane.com
 1. git cloneでローカルにソースコードをダウンロードする
 2. clientディレクトリとapiディレクトリにcdコマンドで移動
 3. 2の各ディレクトリでnpm install（もしくはyarn add）を実行
-4. apiディレクトリに.envファイルを作成し、「DATABASE_URL="mysql://USER:PASSWORD@HOST:PORT/DATABASE"」を貼り付ける
-5. 4のUSER、PASSWORD、HOST、PORT、DATABASEを適切な形に修正（PORTは3306、DATABASEはrakumane）
-6. .envファイルにSECRET_KEY="(任意の文字列)"を入力
-7. MySQLとWebサーバーを起動する
-8. 2の各ディレクトリでnpm run devを実行
-9. clientディレクトリで実行すると、http://localhost:3000 が表示されるのでアクセスする
+4. apiディレクトリに.envファイルを作成し、「PORT="8080"、SECRET_KEY="(任意の文字列)"、MYSQL_HOST="(ホスト名)"、MYSQL_USER="(ユーザー名)"、MYSQL_PASSWORD="(MySQLのパスワード)"」を貼り付ける
+5. 4のSECRET_KEY、MYSQL_HOST、MYSQL_USER、MYSQL_PASSWORDを入力する
+6. MySQLとWebサーバーを起動する
+7. 2の各ディレクトリでnpm run devを実行
+8. clientディレクトリで実行すると、http://localhost:3000 が表示されるのでアクセスする
 
 # ターゲット
 このアプリのターゲットは以下を想定しています。

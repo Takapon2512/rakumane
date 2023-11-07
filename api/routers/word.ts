@@ -481,11 +481,25 @@ wordRouter.post("/delete", (req, res) => {
         `;
         con.query(sql, [formattedDate, targetWord.user_id, targetWord.user_word_id], (err) => {
             if (err) return res.status(500).json({ error: "単語の削除に失敗しました。" });
-            return res.status(200).json({ message: "単語を削除しました。" });
+        });
+
+        //単語番号を振り直す処理
+        const wordSql = `SELECT * FROM Word WHERE user_id = ? AND deleted_at IS NULL`;
+        con.query(wordSql, [targetWord.user_id], (err: MysqlError | null, userWords: WordDBType[]) => {
+            if (err) return res.status(500).json({ error: "単語の抽出に失敗しました。" });
+
+            const newWords = userWords.map((word, index) => ({ ...word, user_word_id: index + 1 }));
+
+            const updateWordIdSql = `UPDATE Word SET user_word_id = ? WHERE user_id = ? AND english = ?`;
+            newWords.map(word => {
+                con.query(updateWordIdSql, [word.user_word_id, targetWord.user_id, word.english], (err) => {
+                    if (err) return res.status(500).json({ error: "単語番号の振り直し処理に失敗しました。" });
+                });
+            });
         });
         
         con.release();
+        return res.status(200).json({ message: "単語の削除処理が完了しました。" });
     });
-
 });
 
